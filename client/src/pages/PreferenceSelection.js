@@ -37,7 +37,7 @@ function PreferenceSelection(){
         // const [status, set_status] = useState("NO_CHANGE")
     
         console.log("Request received: ", selected_products)
-        set_personalised_loading(true)
+        
         // useEffect(()=>{
             
             if((selected_products !== null) && (selected_products !== undefined)){
@@ -45,6 +45,7 @@ function PreferenceSelection(){
                     window.alert(`Please select ONE image, you have selected, ${selected_products.length.toString()}`)
                 }
                 else{
+                    set_personalised_loading(true)
                     console.log("sending request from getPreferenceResults hook")
                     axios.post('https://us-central1-retail-assistant-demo.cloudfunctions.net/getPersonalisedProducts',
                     {
@@ -75,10 +76,7 @@ function PreferenceSelection(){
             else{
                 window.alert("Please choose a style you'd like to search for")
             }
-    
-        // },[request])
-        // console.log("status at usegetresults: ", status)
-        
+            
     }
 
 
@@ -92,27 +90,25 @@ function PreferenceSelection(){
     return(
         <div>
             <Button 
-                style={{"position": "fixed", "top": "2%", "left": "2%"}} 
+                style={{"margin": "5px", "position": "fixed", "top": "2%", "left": "2%"}} 
                 onClick={()=>{navigate('/#search')}}
             >
                 Back
             </Button>
+            <br/>
+            <br/>
+            
 
             {
                 !show_personalised_results && 
                 <div>
                     
-                    <div style={{"width": 0.8*width, "margin": "auto", "height": 0.8*height}}>
+                    <div style={{"width": 0.8*width, "margin": "auto", "height": 0.7*height}}>
                         <br/>
-                        <h2>Select <span style={{"fontWeight": "bold"}}>ONE</span> image for the type of style you like or are looking for</h2>
-                        <br/>
-                        
+                        <h2>Select <span style={{"fontWeight": "bold"}}>ONE</span> image for the type of style you like or are looking for</h2>                        
 
-                        {/* CHOOSE A T-SHIRTS STYLE THAT YOU LIKE */}
-                        {/* CAN ONLY SELECT ONE STYLE AT THE MOMENT - WORKING TO IMPROVE THIS */}
-                        {/* SIT COMFORTABLE WHILST WE FIND PRODUCTS MATCHING THE STYLE THAT YOU LIKE */}
-                        <Container style={{"width": 0.8*width, "margin": "auto", "height": 0.8*height, "overflowY": "scroll"}}>
-                            <Row xl={4}lg={4} md={3} sm={3} xs={2}>
+                        <Container style={{"width": 0.85*width, "margin": "auto", "height": 0.7*height, "overflowY": "scroll"}}>
+                            <Row xl={4}lg={4} md={3} sm={2} xs={2}>
                             {product_select_data ? product_select_data.map((item, index)=>{
                                 return(
                                 <Col key={index}>
@@ -137,9 +133,7 @@ function PreferenceSelection(){
                                             "borderColor": selected_products.length === 0 ? null : (selected_products.includes(index) ? 'blue' : null),
                                             "opacity": selected_products.length === 0 ? null : (selected_products.includes(index) ? 0.5 : 1)
                                         }}
-                                    />
-                                    {/* SEARCH FOR A NEW STYLE */}
-                                    
+                                    />                                    
                                 </Col>
                                 )
                             })
@@ -162,16 +156,7 @@ function PreferenceSelection(){
                         <Button
                             onClick={()=>{
                                 //send available products for picking
-                                //and selected products to backend and retrieve results on 
-                                //personalised page
-                                //send product_select_data and selected_products
-                                //product_select_data has names (description), image urls etc of available choices
-                                //selected_products has indices of products from product_select_data that user selected
-                                // navigate(`/personalised-results/${selected_products}`)
-
-                                //or stay on this page but show personalised results
-                                //set_show_personalised_results(true)
-                                //set_show_select_preferences(false)
+                                //and selected products to backend and retrieve results 
                                 getPreferenceResults()
                             }}
                         >
@@ -180,9 +165,13 @@ function PreferenceSelection(){
                     </div>
 
                     <div className='center'>
-                        {personalised_loading && <Spinner animation="border"/>}
-                        <h3>Sit back whilst we create a personalised shopping experience for you </h3>
-                        <h5>Note - this service does not yet use a vector database, hence the vector search may take up to 30 secs </h5>
+                        {personalised_loading && 
+                            <div>
+                                <Spinner animation="border"/>
+                                <h3>Sit back whilst we create a personalised shopping experience for you </h3>
+                                <h5>Note - this service does not yet use a vector database, hence the vector search may take up to 30 secs </h5>
+                            </div>
+                        }
                     </div>
                 </div>
             }
@@ -190,7 +179,6 @@ function PreferenceSelection(){
             {show_personalised_results && 
             <div>
                 <PersonalisedResults results={personalised_results} your_choice={your_choice}/>
-            
             </div>}
 
         </div>

@@ -62,7 +62,7 @@ function Search(props) {
             
             {show_ai_assistant_icon && 
             <SmartToyIcon 
-            style={{"position": "fixed", "bottom": 0, "right": 0, "height": 0.1*height, "width": 0.1*width}}
+            style={{"position": "fixed", "bottom": 0, "right": 0, "height": 0.15*height, "width": 0.15*width}}
             onClick={()=>{
                 set_show_ai_modal(true)
                 set_show_ai_assistant_icon(false)
