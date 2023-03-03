@@ -145,7 +145,7 @@ function PreferenceSelection(){
                         </Container>
 
                         <Button
-                            style={{"margin": "5px"}}
+                            style={{"position": "fixed", "bottom": 0, "left": 0, "zIndex": 100}}
                             onClick={()=>{
                                 set_reset(reset + 1)
                             }}
