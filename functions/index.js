@@ -3,6 +3,7 @@ const admin = require('firebase-admin')
 const axios  = require('axios')
 const cors = require('cors')({origin: "*"});
 const similarity = require( 'compute-cosine-similarity' );
+const API_KEY = process.env.OPEN_AI
 
 admin.initializeApp();
 
@@ -70,7 +71,7 @@ exports.search = functions.https.onRequest((request, response) => {
             {
                 headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer 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"
+                "Authorization": `Bearer ${API_KEY}`
                 }
             }
         ).then((user_request_embeddings)=>{
@@ -112,7 +113,7 @@ exports.getPersonalisedProducts = functions.https.onRequest((request, response) 
             {
                 headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer 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"
+                "Authorization": `Bearer ${API_KEY}`
                 }
             }
         ).then((user_request_embeddings)=>{
