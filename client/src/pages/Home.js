@@ -51,11 +51,11 @@ function Home() {
     console.log("Request received: ", request)
     // useEffect(()=>{
         
-        if((request !== null) && (request !== undefined)){
+        if((request.u_request !== null) && (request.u_request !== undefined)){
             console.log("sending request from getResults hook")
             axios.post('https://us-central1-retail-assistant-demo.cloudfunctions.net/search',
               {
-                  "request": request,
+                  "request": request.u_request,
               }, 
               {
                 headers: {

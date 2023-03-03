@@ -154,6 +154,7 @@ function PreferenceSelection(){
                         </Button>
 
                         <Button
+                            style={{"position": "fixed", "bottom": 0, "right": 0, "zIndex": 100}}
                             onClick={()=>{
                                 //send available products for picking
                                 //and selected products to backend and retrieve results 
