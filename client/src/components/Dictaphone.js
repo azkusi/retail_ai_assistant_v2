@@ -36,7 +36,7 @@ const Dictaphone = (props) => {
   if (!browserSupportsSpeechRecognition) {
     return(
       <div>
-        <h5>Browser doesn't support speech recognition.</h5>
+        <p>Your browser doesn't support speech recognition, please type instead.</p>
         <Form onSubmit={(e)=>{e.preventDefault()}}>
         <Form.Group className="mb-3" controlId="formText">
           <Form.Control ref={inputRef} as="textarea" rows={1}/>

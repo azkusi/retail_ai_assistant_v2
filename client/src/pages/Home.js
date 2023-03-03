@@ -199,7 +199,7 @@ function uploadFileComparison(data){
           <div>
             <Spinner animation='border'/>
             <h3>Sit back whilst we create a personalised shopping experience for you </h3>
-            <h5>Note - this service does not <span style={{"fontWeight": "bold"}}>yet</span> use a vector database, hence the vector search may take up to 30 secs </h5>
+            <h5>Note - this service does not <span style={{"fontWeight": "bold"}}>yet</span> use a vector database, hence the vector search may take up to 60 secs </h5>
           </div>
           }
       </div>

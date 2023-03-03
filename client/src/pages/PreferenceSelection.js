@@ -42,7 +42,7 @@ function PreferenceSelection(){
             
             if((selected_products !== null) && (selected_products !== undefined)){
                 if(selected_products.length !== 1){
-                    window.alert(`Please select ONE image, you have selected, ${selected_products.length.toString()}`)
+                    window.alert(`Please select ONE image, you have selected: ${selected_products.length.toString()}`)
                 }
                 else{
                     set_personalised_loading(true)
@@ -131,7 +131,7 @@ function PreferenceSelection(){
                                             "margin": "10px", 
                                             "borderStyle": selected_products.length === 0 ? null : (selected_products.includes(index) ? 'solid' : "none"),
                                             "borderColor": selected_products.length === 0 ? null : (selected_products.includes(index) ? 'blue' : null),
-                                            "opacity": selected_products.length === 0 ? null : (selected_products.includes(index) ? 0.5 : 1)
+                                            "opacity": selected_products.length === 0 ? null : (selected_products.includes(index) ? 0.2 : 1)
                                         }}
                                     />                                    
                                 </Col>
@@ -153,7 +153,7 @@ function PreferenceSelection(){
                             Refresh to get new styles
                         </Button>
 
-                        <Button
+                        {(selected_products.length > 0) && <Button
                             style={{"position": "fixed", "bottom": 0, "right": 0, "zIndex": 100}}
                             onClick={()=>{
                                 //send available products for picking
@@ -162,7 +162,7 @@ function PreferenceSelection(){
                             }}
                         >
                             Done
-                        </Button>
+                        </Button>}
                     </div>
 
                     <div className='center'>
@@ -170,7 +170,7 @@ function PreferenceSelection(){
                             <div>
                                 <Spinner animation="border"/>
                                 <h3>Sit back whilst we create a personalised shopping experience for you </h3>
-                                <h5>Note - this service does not yet use a vector database, hence the vector search may take up to 30 secs </h5>
+                                <h5>Note - this service does not <span style={{"fontWeight": "bold"}}>yet</span> use a vector database, hence the vector search may take up to 60 secs </h5>
                             </div>
                         }
                     </div>

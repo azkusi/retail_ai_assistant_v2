@@ -14,7 +14,6 @@ function PersonalisedResults(props){
 
     return(
         <div>
-            <Button style={{"position": "fixed", "top": "2%", "left": "2%"}} onClick={()=>{navigate('/')}}>Back</Button>
             <h1>Personalised Results</h1>
 
             <div style={{"width": "100%", "margin": "auto"}}>
