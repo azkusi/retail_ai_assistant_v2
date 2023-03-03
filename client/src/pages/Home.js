@@ -130,6 +130,8 @@ function Home() {
 
       <div className='center'>
           {spinner && <Spinner animation='border'/>}
+          <h3>Sit back whilst we create a personalised shopping experience for you </h3>
+          <h5>Note - this service does not yet use a vector database, hence the vector search may take up to 30 secs </h5>
       </div>
       
     </div>
