@@ -3,15 +3,17 @@ import '../App.css';
 import { product_data } from '../data/products';
 import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
-import useGetResults from '../hooks/useGetResults';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Search from '../pages/Search';
-import { Grid, Row, Col, Container, Spinner} from 'react-bootstrap';
+import { Row, Col, Container, Spinner} from 'react-bootstrap';
 import useWindowSize from '../hooks/useWindow';
 import ItemSelection from '../pages/ItemSelection';
-import { Route, Routes } from 'react-router-dom';
 import axios from 'axios';
+import { firebaseApp } from '../config';
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import "firebase/compat/storage"
 
 
 function Home() {
@@ -25,6 +27,21 @@ function Home() {
   const width = useWindowSize().width
   const height = useWindowSize().height
   const [spinner, set_spinner] = useState(false)
+  let db;
+  let projectStorage;
+  let projectFirestore;
+
+  if (!firebase.apps.length) {
+    firebaseApp()
+    db = firebase.firestore()
+    projectStorage = firebase.storage();
+    projectFirestore = firebase.firestore();
+  }else {
+    db = firebase.app().firestore() // if already initialized, use this one
+    projectStorage = firebase.app().storage();
+    projectFirestore = firebase.app().firestore();
+
+  }
 
 
   function getResults(request){
@@ -64,6 +81,55 @@ function Home() {
     
 }
 
+
+function uploadFileComparison(data){
+  const file = data["u_request"]
+  const projectStorage = firebaseApp.storage();
+  const projectFirestore = firebaseApp.firestore();
+
+  set_spinner(true)
+  projectFirestore.collection("images_to_check").add({"placeholder": "placeholder"}).then((docRef)=>{
+    const locationRef = docRef.id
+    const storageRef = projectStorage.ref(locationRef);
+    storageRef.put(file).on('state_changed', (snap) => {
+      let percentage = (snap.bytesTransferred / snap.totalBytes) * 100;
+      console.log(percentage, "% loaded");
+      }, (err) => {
+      console.log(err);
+      //set an error
+      }, async () => {
+      const url = await storageRef.getDownloadURL();
+      const createdAt = Date.now();
+      projectFirestore.collection("images_to_check").doc(locationRef).get().then(async (doc)=>{
+        console.log("Finished uploading")
+          return await projectFirestore.collection("images_to_check")
+          .doc(locationRef).update({"image_url": url, "created_at": createdAt});
+      }).then(()=>{
+        axios.post('https://us-central1-retail-assistant-demo.cloudfunctions.net/compareImages',
+            {
+                "source_url": url,
+            }, 
+            {
+              headers: {
+                  "Access-Control-Allow-Origin": "*"
+
+              }
+            }
+          ).then((result)=>{
+              console.log("get results hooked received a result: ", result.data.result)
+              set_product_results(result.data.result)
+              set_refresh_status("CHANGED")
+              set_spinner(false)
+              return {
+                "products": result.data.result,
+                "status": "CHANGED"
+              }
+          })
+      })
+    })
+  })    
+}
+
   function manageSearchResults(request){
     console.log("App callback, request received: ", request)
     if(request){
@@ -87,7 +153,7 @@ function Home() {
 
   return (
     <div style={{"width": width}} className="App">
-      <div style={{"opacity": spinner ? 0.4 : 1}}>
+      <div style={{"opacity": spinner ? 0.2 : 1}}>
 
       
         <Tabs
@@ -110,7 +176,7 @@ function Home() {
                   })}
                 </Row>
 
-                <Search HomeCallBack={manageSearchResults}/>
+                <Search HomeCallBack={manageSearchResults} HomeSecondCallBack={uploadFileComparison}/>
                 {/* <Search/> */}
 
               </Container>
@@ -133,7 +199,7 @@ function Home() {
           <div>
             <Spinner animation='border'/>
             <h3>Sit back whilst we create a personalised shopping experience for you </h3>
-            <h5>Note - this service does not yet use a vector database, hence the vector search may take up to 30 secs </h5>
+            <h5>Note - this service does not <span style={{"fontWeight": "bold"}}>yet</span> use a vector database, hence the vector search may take up to 30 secs </h5>
           </div>
           }
       </div>

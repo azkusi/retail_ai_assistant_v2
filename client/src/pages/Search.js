@@ -1,13 +1,10 @@
 // import { Gallery } from "react-grid-gallery";
-import { product_data } from '../data/products';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import { useEffect, useState } from 'react';
-import { Modal, Button, Row, Col, Container, Form, Spinner } from 'react-bootstrap';
+import { Modal, Button, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dictaphone from '../components/Dictaphone';
-import useGetResults from '../hooks/useGetResults';
 import useWindowSize from "../hooks/useWindow";
-import axios from 'axios'
 import '../App.css'
 
 
@@ -21,7 +18,7 @@ function Search(props) {
   const [show_ai_modal, set_show_ai_modal] = useState(false)
   const [file, set_file] = useState(null)
   
-
+  
 //   const [user_request, set_user_request] = useState(null)
 //   const user_result = useGetResults(user_request)
   
@@ -31,19 +28,20 @@ function Search(props) {
   function sendUserRequest(dictaphone_data){
     console.log("Search callback, dictaphone data updated: ", dictaphone_data)
 
-    if(dictaphone_data){
-        //this will set off GetResults to re-run, and
-        //present new product data
-        // set_user_request(dictaphone_data)
-        // set_spinner(true)
-        console.log("user request: ", dictaphone_data)
-        props.HomeCallBack(dictaphone_data)
-        
+    if(dictaphone_data.type === "text"){
+      //send user request to home component to send to firebase
+      console.log("user request: ", dictaphone_data)
+      props.HomeCallBack(dictaphone_data)
+    }
+    else if(dictaphone_data.type === "file"){
+      props.HomeSecondCallBack(dictaphone_data)
     }
     
     set_show_ai_modal(false)
     set_show_ai_assistant_icon(true)
   }
+
+
 
 
   useEffect(()=>{
@@ -98,8 +96,17 @@ function Search(props) {
                         }} type='file'>
                     </Form.Control>
                     <Button onClick={()=>{
-                        // file ? set_user_request(file) : alert("Please upload an image")
-                        set_show_ai_modal(false) 
+                        // if(file){
+                        //   sendUserRequest({"u_request": file, "type": "file"})
+                        //   set_show_ai_modal(false) 
+                        //   set_show_ai_assistant_icon(true)
+                        // }else{
+                        //   alert("Please upload an image")
+                        //   set_show_ai_modal(false) 
+                        //   set_show_ai_assistant_icon(true)
+                        // } 
+                        window.alert("This feature is still being built")
+                        
                         }}>Upload</Button>
                     </Form.Group>
                 </div>

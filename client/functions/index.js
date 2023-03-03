@@ -3,7 +3,9 @@ const admin = require('firebase-admin')
 const axios  = require('axios')
 const cors = require('cors')({origin: "*"});
 const similarity = require( 'compute-cosine-similarity' );
-const API_KEY = process.env.OPEN_AI
+const deepai = require('deepai'); // 
+const API_KEY_OPEN_AI = process.env.OPEN_AI
+const API_KEY_DEEP_AI = process.env.DEEP_AI
 
 admin.initializeApp();
 
@@ -51,6 +53,11 @@ function rank_cosine_sim(a, b) {
 
 
 }
+
+
+// async function imageEmbedding(doc) {
+    
+// }
   
 
 
@@ -71,7 +78,7 @@ exports.search = functions.https.onRequest((request, response) => {
             {
                 headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${API_KEY}`
+                "Authorization": `Bearer ${API_KEY_OPEN_AI}`
                 }
             }
         ).then((user_request_embeddings)=>{
@@ -113,7 +120,7 @@ exports.getPersonalisedProducts = functions.https.onRequest((request, response) 
             {
                 headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${API_KEY}`
+                "Authorization": `Bearer ${API_KEY_OPEN_AI}`
                 }
             }
         ).then((user_request_embeddings)=>{
@@ -145,3 +152,79 @@ exports.getPersonalisedProducts = functions.https.onRequest((request, response) 
     
       
 });
+
+
+
+exports.compareImages = functions.https.onRequest((request, response) => {
+    // response.set('Access-Control-Allow-Origin', '*');
+
+    cors(request, response, ()=>{
+        functions.logger.info("Hello logs!", {structuredData: true});
+        //receive user request and generate embeddings for the request
+        const source_url = request.body["source_url"]
+        deepai.setApiKey(API_KEY_DEEP_AI);
+        let temp = [];
+        admin.firestore().collection("test_products").get().then((querySnapshot)=>{
+            return new Promise(async(resolve, reject)=>{
+                let i = 0
+                for(i; i < 100; i++){
+                    const doc = querySnapshot.docs[i]
+                    console.log("source url: ", source_url)
+                    console.log("doc url: ", doc.data()["image_url"])
+                    try{
+                        var resp = await deepai.callStandardApi("image-similarity", {
+                        image1: source_url,
+                        image2: doc.data()["image_url"],
+                        });
+                        console.log(resp);
+                        temp.push({ 
+                            "name": doc.data()["name"],
+                            "src":  doc.data()["image_url"],
+                            "cosine_sim":  resp
+                        })
+                    }
+                    catch(error){
+                        console.log("error with deepai...:",  error)
+                        break
+                    }
+                    // const resp = await axios.post('https://api.deepai.org/api/image-similarity',
+                    //     {
+                    //         "image1":source_url,
+                    //         "image2": doc.data()["image_url"]
+                    //     },
+                    //     {
+                    //         headers: {
+                    //         "Content-Type": "application/json",
+                    //         "api-key": `${API_KEY_DEEP_AI}`
+                    //         }
+                    //     }
+                    // )
+                    // temp.push({ 
+                    //         "name": doc.data()["name"],
+                    //         "src":  doc.data()["image_url"],
+                    //         "cosine_sim":  resp
+                    //     })
+            
+                }
+                if(i === 250){
+                    resolve(temp)
+                }
+            }).then((result)=>{
+                result.sort(rank_cosine_sim)
+            }).then((final_array)=>{
+                response.header({"Access-Control-Allow-Origin": "*"})
+                    return response.send({
+                        "result": final_array
+                    })
+            })     
+            
+        })
+        
+    })
+    
+      
+});
+
+
+
+

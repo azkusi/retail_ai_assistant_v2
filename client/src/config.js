@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 // // import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
-const firebaseApp = firebase.initializeApp({
+export const firebaseApp = firebase.initializeApp({
     apiKey: "AIzaSyDXjBvg6CNef3U-HxRvMNx-KAcSoFvTqO0",
     authDomain: "retail-assistant-demo.firebaseapp.com",
     projectId: "retail-assistant-demo",
