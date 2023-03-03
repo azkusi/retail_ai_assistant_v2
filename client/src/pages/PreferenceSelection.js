@@ -103,7 +103,7 @@ function PreferenceSelection(){
                 !show_personalised_results && 
                 <div>
                     
-                    <div style={{"width": 0.8*width, "margin": "auto", "height": 0.7*height}}>
+                    <div style={{"width": 0.8*width, "margin": "auto", "height": 0.7*height, "opacity": personalised_loading ? 0.2 : 1}}>
                         <br/>
                         <h2>Select <span style={{"fontWeight": "bold"}}>ONE</span> image for the type of style you like or are looking for</h2>                        
 

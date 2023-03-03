@@ -14,6 +14,7 @@ function PersonalisedResults(props){
 
     return(
         <div>
+            <br/>
             <h1>Personalised Results</h1>
 
             <div style={{"width": "100%", "margin": "auto"}}>
@@ -33,6 +34,8 @@ function PersonalisedResults(props){
                             <Row xl={4}lg={4} md={3} sm={3} xs={2}>
                                 {personalised_product_results.map((item, index)=>{
                                 return(
+                                    index === 0 ?
+                                    null :
                                     <Col key={index}>
                                     <img alt={index} src={item.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
                                     </Col>
