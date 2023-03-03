@@ -37,13 +37,16 @@ const Dictaphone = (props) => {
     return(
       <div>
         <h5>Browser doesn't support speech recognition.</h5>
-        <Form>
+        <Form onSubmit={(e)=>{e.preventDefault()}}>
         <Form.Group className="mb-3" controlId="formText">
           <Form.Control ref={inputRef} as="textarea" rows={1}/>
             
-            <Button onClick={()=>{
+            <Button onClick={(e)=>{
                 console.log(inputRef.current.value)
-                props.SearchCallBack(inputRef ? inputRef.current.value : '')
+                props.SearchCallBack(inputRef ? {"u_request": inputRef.current.value, "type": "text"} 
+                : {"u_request": "", "type": "text"})
+              
+              
               }}
             >
               Go
