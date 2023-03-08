@@ -25,7 +25,7 @@ function PreferenceSelection(){
 
     function productInitialiser(){
         if(id === "mens_trousers"){
-            console.log(typeof(selected_products))
+            console.log("mens_trousers")
             let i = 0
             let temp = []
             for(i; i < 20; i++){
@@ -33,7 +33,7 @@ function PreferenceSelection(){
                 set_product_select_data(temp)
             }
         }else if(id === "mens_t_shirts"){
-            console.log(typeof(selected_products))
+            console.log("mens_t_shirts")
             let i = 0
             let temp = []
             for(i; i < 20; i++){
@@ -48,6 +48,12 @@ function PreferenceSelection(){
     function getPreferenceResults(){
         // const [result_to_send, set_result_to_send] = useState(product_data)
         // const [status, set_status] = useState("NO_CHANGE")
+        let type_of_request;
+        if(id === "mens_trousers"){
+            type_of_request = "mens_trousers"
+        }else{
+            type_of_request = "mens_t_shirts"
+        }
     
         console.log("Request received: ", selected_products)
         
@@ -60,11 +66,12 @@ function PreferenceSelection(){
                 else{
                     set_personalised_loading(true)
                     console.log("sending request from getPreferenceResults hook")
+                    console.log("type of request: ", type_of_request)
                     axios.post('https://us-central1-retail-assistant-demo.cloudfunctions.net/getPersonalisedProducts',
                     {
                         "available_products": (id === "mens_trousers") ? mens_trousers :  mens_t_shirts,
                         "selected_products": selected_products,
-                        "type": (id === "mens_trousers") ? "mens_trousers" :  "mens_t_shirts"
+                        "type": type_of_request
                     }, 
                     {
                         headers: {
@@ -119,7 +126,8 @@ function PreferenceSelection(){
                     
                     <div style={{"width": 0.8*width, "margin": "auto", "height": 0.7*height, "opacity": personalised_loading ? 0.2 : 1}}>
                         <br/>
-                        <h2>Select <span style={{"fontWeight": "bold"}}>ONE</span> image for the type of style you like or are looking for</h2>                        
+                        <h1>Show the AI stylist your style</h1>
+                        <p>Select <span style={{"fontWeight": "bold"}}>ONE</span> image for the type of style you like or are looking for and we'll find similar results for you</p>                        
 
                         <Container style={{"width": 0.85*width, "margin": "auto", "height": 0.7*height, "overflowY": "scroll"}}>
                             <Row xl={4}lg={4} md={3} sm={2} xs={2}>
@@ -183,8 +191,9 @@ function PreferenceSelection(){
                         {personalised_loading && 
                             <div>
                                 <Spinner animation="border"/>
-                                <h3>Sit back whilst we create a personalised shopping experience for you </h3>
-                                <h5>Note - this service does not <span style={{"fontWeight": "bold"}}>yet</span> use a vector database, hence the vector search may take up to 60 secs </h5>
+                                <h2 style={{"fontWeight": "bold"}}>Sit back whilst we create a personalised shopping experience for you </h2>
+                                <br/>
+                                <p>Note - this service uses kNN and does not <span style={{"fontWeight": "bold"}}>yet</span> use A-NN with a vector database, hence the vector similarity search may take up to 60 secs </p>
                             </div>
                         }
                     </div>

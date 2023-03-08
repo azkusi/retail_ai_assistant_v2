@@ -184,7 +184,7 @@ function uploadFileComparison(data){
             
           </Tab>
 
-          <Tab className='center' eventKey="personalised" title="Personalised Shopping">
+          <Tab className='center' eventKey="personalised" title="Personal Shopper">
             <ItemSelection/>
           </Tab>
 
@@ -197,8 +197,9 @@ function uploadFileComparison(data){
           {spinner && 
           <div>
             <Spinner animation='border'/>
-            <h3>Sit back whilst we create a personalised shopping experience for you </h3>
-            <h5>Note - this service does not <span style={{"fontWeight": "bold"}}>yet</span> use a vector database, hence the vector search may take up to 60 secs </h5>
+            <h2 style={{"fontWeight": "bold"}}>Sit back whilst we create a personalised shopping experience for you </h2>
+            <br/>
+            <p>Note - this service uses kNN and does not <span style={{"fontWeight": "bold"}}>yet</span> use A-NN with a vector database, hence the vector similarity search may take up to 60 secs </p>
           </div>
           }
       </div>

@@ -159,7 +159,7 @@ exports.getPersonalisedProducts = functions.runWith({ memory: "1GB" }).https.onR
                 "Authorization": `Bearer ${API_KEY_OPEN_AI}`
                 }
             }
-        ).then((user_request_embeddings, type)=>{
+        ).then((user_request_embeddings)=>{
             const embedding_vector = user_request_embeddings["data"]["data"][0]["embedding"]
             //compare the user request embeddings to product text embeddings
             //and obtain a cosine_similarity score (%)
