@@ -100,11 +100,10 @@ function uploadFileComparison(data){
       }, async () => {
       const url = await storageRef.getDownloadURL();
       const createdAt = Date.now();
-      projectFirestore.collection("images_to_check").doc(locationRef).get().then(async (doc)=>{
-        console.log("Finished uploading")
-          return await projectFirestore.collection("images_to_check")
-          .doc(locationRef).update({"image_url": url, "created_at": createdAt});
-      }).then(()=>{
+      console.log("Finished uploading")
+      projectFirestore.collection("images_to_check")
+      .doc(locationRef).update({"image_url": url, "created_at": createdAt})
+      .then(()=>{
         axios.post('https://us-central1-retail-assistant-demo.cloudfunctions.net/compareImages',
             {
                 "source_url": url,
@@ -162,7 +161,7 @@ function uploadFileComparison(data){
           className="mb-3"
           fill
         >
-          <Tab eventKey="search" title="Search">
+          <Tab eventKey="search" title="Augmented Search">
             <div style={{"width": "100%", "margin": "auto"}}>
                 
               <Container style={{"width": 0.8*width, "margin": "auto"}}>

@@ -75,7 +75,7 @@ function Search(props) {
                 backdrop={false}
             >
                 <Modal.Header style={{"borderLeft": "solid", "borderRight": "solid", "borderTop": "solid"}} closeButton>
-                <Modal.Title style={{"textAlign": "center"}}>Describe, or upload what you're looking for</Modal.Title>
+                <Modal.Title style={{"textAlign": "center"}}>Describe, or upload a T-SHIRT style you're looking for</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body style={{"border": "solid"}}>

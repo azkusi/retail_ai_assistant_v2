@@ -6,6 +6,8 @@ import { product_data } from "../data/products";
 import '../App.css'
 import PersonalisedResults from "./PersonalisedResults";
 import axios from "axios";
+import { mens_t_shirts } from "../data/mens_t_shirts";
+import { mens_trousers } from "../data/mens_trousers";
 
 
 function PreferenceSelection(){
@@ -22,13 +24,24 @@ function PreferenceSelection(){
     const navigate = useNavigate()
 
     function productInitialiser(){
-        console.log(typeof(selected_products))
-        let i = 0
-        let temp = []
-        for(i; i < 20; i++){
-            temp.push(product_data[Math.floor(Math.random() * (product_data.length - 1))])
-            set_product_select_data(temp)
+        if(id === "mens_trousers"){
+            console.log(typeof(selected_products))
+            let i = 0
+            let temp = []
+            for(i; i < 20; i++){
+                temp.push(mens_trousers[Math.floor(Math.random() * (mens_trousers.length - 1))])
+                set_product_select_data(temp)
+            }
+        }else if(id === "mens_t_shirts"){
+            console.log(typeof(selected_products))
+            let i = 0
+            let temp = []
+            for(i; i < 20; i++){
+                temp.push(mens_t_shirts[Math.floor(Math.random() * (mens_t_shirts.length - 1))])
+                set_product_select_data(temp)
+            }
         }
+        
     }
 
 
@@ -49,8 +62,9 @@ function PreferenceSelection(){
                     console.log("sending request from getPreferenceResults hook")
                     axios.post('https://us-central1-retail-assistant-demo.cloudfunctions.net/getPersonalisedProducts',
                     {
-                        "available_products": product_select_data,
-                        "selected_products": selected_products
+                        "available_products": (id === "mens_trousers") ? mens_trousers :  mens_t_shirts,
+                        "selected_products": selected_products,
+                        "type": (id === "mens_trousers") ? "mens_trousers" :  "mens_t_shirts"
                     }, 
                     {
                         headers: {
