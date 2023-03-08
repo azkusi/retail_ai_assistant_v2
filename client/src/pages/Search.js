@@ -105,7 +105,7 @@ function Search(props) {
                         //   set_show_ai_modal(false) 
                         //   set_show_ai_assistant_icon(true)
                         // } 
-                        window.alert("This feature is still being built")
+                        window.alert("This search feature is still being built")
                         
                         }}>Upload</Button>
                     </Form.Group>
