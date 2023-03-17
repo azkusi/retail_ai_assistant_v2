@@ -1,5 +1,5 @@
 /* eslint-disable no-loop-func */
-import { React, useState } from 'react';
+import { React, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import useWindowSize from "../hooks/useWindow";
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -13,8 +13,12 @@ import { firebaseApp } from '../config';
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage"
+import { mixed_clothing } from '../data/mixed_clothing';
+const Typesense = require('typesense')
 
 
+
+ 
 
 
 
@@ -22,15 +26,20 @@ function ItemSelection(props) {
 
   const [mens_ts, set_mens_ts] = useState(mens_t_shirts)
   const [mens_trous, set_mens_trous] = useState(mens_trousers) 
-  const API_KEY_DEEP_AI = process.env.API_KEY_DEEP_AI
-  const API_KEY_OPEN_AI = process.env.API_KEY_OPEN_AI
+  const API_KEY_DEEP_AI = process.env.DEEP_AI
+  const API_KEY_OPEN_AI = process.env.OPEN_AI
+  const PINECONE_API_KEY = process.env.PINECONE
+  const TYPESENSE_API_KEY = "0ay9AbptlTqyP2egi7V6tXYSm0fRSolX"
+  const [embedding, set_embedding] = useState(null)
+  // const [trousers_insert, set_trousers_insert] = useState([])
 
   // let db;
   let projectStorage;
   let projectFirestore;
 
-  let no_file_count = 0
-  let file_count = 0;
+
+
+  // let trousers_insert = []
 
   if (!firebase.apps.length) {
     firebaseApp()
@@ -44,114 +53,93 @@ function ItemSelection(props) {
 
   }
 
-//   function sendProducts(product_instance, product_type){
-//     if(product_type === "mens_trousers"){
-//       db.collection("mens").doc("1").collection("mens_trousers").add({
-//         "name": product_instance["thumbnailCaption"],
-//         "src": product_instance["src"],
-//       })    
-//     }
-//     if(product_type === "mens_t_shirts"){
-//       db.collection("mens").doc("1").collection("mens_t_shirts").add({
-//         "name": product_instance["thumbnailCaption"],
-//         "src": product_instance["src"],
-//       })    
-//     }
+  let client = new Typesense.Client({
+                'nodes': [{
+                  'host': 'j1e5iohdgu2ya7nqp-1.a1.typesense.net', // For Typesense Cloud use xxx.a1.typesense.net
+                  'port': '443',      // For Typesense Cloud use 443
+                  'protocol': 'https'   // For Typesense Cloud use https
+                }],
+                'apiKey': 'qVEACzIepH6miYVADVgngiTOZOjxjKiR',
+                'connectionTimeoutSeconds': 10
+              })
+
+  useEffect(()=>{
     
-//   }
+  }, [])
 
-
-
-//   async function t_shirts_image_FB(){
-//   const projectStorage = firebaseApp.storage();
-//   const projectFirestore = firebaseApp.firestore();
   
-//   let i = 0
-//   let names = new Set()
-
-
-//       await db.collection("mens").doc("1").collection("mens_t_shirts")
-//       .get().then((querySnapshot)=>{
-//         querySnapshot.forEach(async (doc)=>{
-//           console.log("data from doc: ", doc.data())
-//           const locationRef = doc.id
-//           try{
-//             axios.get(doc.data()["src"], {
-//               responseType: "blob"
-//               }).then(async (response)=>{
-//                 console.log(response)
-//                 console.log(response.data)
-              
-//               }, (()=>{
-//                   console.log("Deleting", doc.id)
-//                   return projectFirestore.collection("mens").doc("1").collection("mens_t_shirts")
-//                   .doc(locationRef).delete()
-//                 }
-//               ))
-              
-//             }
-//             catch(error){
-//               console.log(error)
-//               console.log("Deleting", doc.id)
-//               return projectFirestore.collection("mens").doc("1").collection("mens_t_shirts")
-//               .doc(locationRef).delete();
-//             }
-//         })
-//       })      
-      
+  
+async function getTextEmbedding(){
+  return new Promise(async (resolve, reject)=>{
+    try{
+      var formData = {"text": "blue t-shirt"}
+        axios.post('https://europe-west2-clip-embeddings.cloudfunctions.net/getTextEmbedding', formData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then((result)=>{
+          const embedding = (result.data)
+          console.log("type of embedding ", typeof(embedding))
+          console.log("embedding is: ", JSON.stringify(embedding))
+          resolve(embedding)
+        }, (error)=>{
+          console.log("error text could not be converted to an embedding:", error)
+          reject(0)
+        })
+    }
+    catch(error){
+      console.log("error text could not be converted to an embedding:", error)
+      reject(0)
+    }
+  })
   
 
-      
-// }
-
-// function getEmbedding(doc){
-//   return new Promise((resolve, reject)=>{
-//     axios.post('https://api.openai.com/v1/embeddings',
-//       {
-//           "input": doc.data()["name"],
-//           "model":"text-embedding-ada-002"
-//       },
-//       {
-//           headers: {
-//           "Content-Type": "application/json",
-//           "Authorization": `Bearer ${API_KEY_OPEN_AI}`
-//           }
-//       }
-//   ).then((result)=>{
-//     resolve(result.data)
-//   })
-//   })
     
-// }
+}
 
+async function getImageEmbedding(url){
+  return new Promise(async (resolve, reject)=>{
+    url = url + "?not-from-cache-please";
+    try{
+      const response = await axios.get(url, {
+        responseType: 'blob'
+      })
+      if(response.status === 200){
+        console.log("image response: ", response)
+        // resolve(1)
+        // const blob_data = response.data
+        const file = new File([response.data], "test.jpg")
+        console.log("blob is", response.data)
+        console.log("file is ", file)
 
-// async function insertEmbeddingsTrousers(){
+        var formData = new FormData()
+        formData.append("image", file)
 
-//   db.collection("mens").doc("1").collection("mens_trousers").get()
-//   .then((querySnapshot)=>{
-//     querySnapshot.forEach(async(doc)=>{
-//       if(!("text_embeddings" in doc.data())){
-//         console.log("no text embeddings")
-//         getEmbedding(doc).then((embedding)=>{
-//           console.log("result obtained")
-//           // console.log("embedding was: ", embedding["data"][0]["embedding"])
-//           db.collection("mens").doc("1")
-//           .collection("mens_trousers").doc(doc.id).update({
-//               "text_embeddings": embedding["data"][0]["embedding"]
-//           }).then(()=>{
-//             console.log("embedding placed into: ", doc.id)
-//           })
-//          })    
-//       }else{
-//         console.log("text embeddings already in")
-//       }
-           
-//     })
-    
-//   })
+          axios.post('https://europe-west2-clip-embeddings.cloudfunctions.net/getImageEmbedding', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }).then((result)=>{
+            const embedding = (result.data)
+            console.log("type of embedding ", typeof(embedding))
+            console.log("embedding is: ", JSON.stringify(embedding))
+            resolve(embedding)
+          })
+      }
+      if(response.status === 404){
+        console.log("error image does not exist:")
+        resolve(0)
+      }
+    }
+    catch(error){
+      console.log("second_error was:", error)
+      resolve(0)
+    }
+  })
   
-// }
 
+    
+}
 
 
   return (
@@ -164,17 +152,96 @@ function ItemSelection(props) {
 
             <Dropdown.Menu>
                 <Dropdown.Item href="/preference-selection/mens_t_shirts">Men's T-Shirts</Dropdown.Item>
-                <Dropdown.Item href="/preference-selection/mens_trousers">Men's Trousers</Dropdown.Item>
+                <Dropdown.Item disabled={true} href="/preference-selection/mens_trousers">Men's Trousers</Dropdown.Item>
             </Dropdown.Menu>
             </Dropdown>
 
             
             {/* <Button
-              onClick={()=>{
-                insertEmbeddingsTrousers()
+              onClick={async ()=>{
+                let i = 0
+                let mixed_clothes_insert = []
+                // let new_mens_trousers = []
+                // let legit_count = 0;
+                for(i; i < 250; i++){
+                  console.log("i is : ", i , "mixed_clothing length is: ", mixed_clothing.length.toString())
+                  await getImageEmbedding(mixed_clothing[i]["src"])
+                  .then(async (embedding)=>{
+                      if((embedding !== 0) ){
+                        mixed_clothes_insert.push({
+                          "ID": i,
+                          "vec": embedding,
+                          "name": mixed_clothing[i]["thumbnailCaption"],
+                          "src": mixed_clothing[i]["src"],
+                          "price": Math.floor(Math.random() * 100)
+                        })
+
+                        if(((i+1) % 10 === 0) && (i !== 0)){
+                          console.log("mixed_clothes_insert embeddings array: ", mixed_clothes_insert)
+
+                          try{
+                            console.log("i is ", i)
+                            await client.collections('mixed_clothing').documents().import(mixed_clothes_insert, {action: 'create'})
+                            .then((result)=>{
+                              console.log("INSERT DONE", (i / 100).toString(), result)
+                            }, (error)=>{
+                              console.log("error was: ", error.importResults)
+                            })
+                          }
+                          catch(err){
+                            console.log("error was: ", err)
+                          }
+                          
+                          mixed_clothes_insert = []
+                        }
+                      }
+                      else{
+                        console.log("issue with embedding insert")
+                      }
+                    
+                  })
+                  
+                  // }
+                  // if(i === mens_t_shirts.length - 1){
+                  //   console.log("trousers embeddings test: ", t_shirts_insert)
+                  //   client.collections('mens_t_shirts').documents().import(t_shirts_insert, {action: 'create'})
+                  //   .then((result)=>{
+                  //     console.log("FINAL INSERT DONE", result)
+                  //   }).then(()=>{
+
+                  //   })
+                  // }
+                }
+                
               }}
             >
-              Trousers To FBURL
+              Insert Mixed Clothing Embeddings
+            </Button> */}
+
+            
+
+            {/* <Button
+              onClick={()=>{
+                client.collections().retrieve().then((result)=>{
+                  console.log("collections: ", result)
+                    client.collections('mixed_clothing').documents().create().then((insert_result)=>{
+                      console.log("insert result: ", result)
+                    })
+                })
+              }}
+            >
+              Create Collection
+            </Button>
+
+
+            <br/>
+            <br/>
+            <Button
+              onClick={()=>{
+                getTextEmbedding()
+              }}
+            >
+              Warm up embeddings
             </Button> */}
             
     </div>  

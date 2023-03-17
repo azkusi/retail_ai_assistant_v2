@@ -8,6 +8,8 @@ import PersonalisedResults from "./PersonalisedResults";
 import axios from "axios";
 import { mens_t_shirts } from "../data/mens_t_shirts";
 import { mens_trousers } from "../data/mens_trousers";
+const Typesense = require('typesense')
+
 
 
 function PreferenceSelection(){
@@ -21,7 +23,9 @@ function PreferenceSelection(){
     const [reset, set_reset] = useState(0)
     const [personalised_loading, set_personalised_loading] = useState(false)
     const [your_choice, set_your_choice] = useState(null)
+    const [loading_new_choices, set_loading_new_choices] = useState(false)
     const navigate = useNavigate()
+
 
     function productInitialiser(){
         if(id === "mens_trousers"){
@@ -31,6 +35,7 @@ function PreferenceSelection(){
             for(i; i < 20; i++){
                 temp.push(mens_trousers[Math.floor(Math.random() * (mens_trousers.length - 1))])
                 set_product_select_data(temp)
+                set_loading_new_choices(false)
             }
         }else if(id === "mens_t_shirts"){
             console.log("mens_t_shirts")
@@ -39,10 +44,45 @@ function PreferenceSelection(){
             for(i; i < 20; i++){
                 temp.push(mens_t_shirts[Math.floor(Math.random() * (mens_t_shirts.length - 1))])
                 set_product_select_data(temp)
+                set_loading_new_choices(false)
             }
         }
         
     }
+
+    async function getFile(){
+        const selection_query = product_select_data[selected_products[0]]
+        let url = selection_query["src"]
+        return new Promise(async (resolve, reject)=>{
+          url = url + "?not-from-cache-please";
+          try{
+            const response = await axios.get(url, {
+              responseType: 'blob'
+            })
+            if(response.status === 200){
+                console.log("image response: ", response)
+                // resolve(1)
+                // const blob_data = response.data
+                const file = new File([response.data], "test.jpg")
+                console.log("blob is", response.data)
+                console.log("file is ", file)
+                resolve(file)
+              
+            }
+            if(response.status === 404){
+              console.log("error image does not exist:")
+              resolve(0)
+            }
+          }
+          catch(error){
+            console.log("second_error was:", error)
+            resolve(0)
+          }
+        })
+        
+      
+          
+      }
 
 
     function getPreferenceResults(){
@@ -66,29 +106,58 @@ function PreferenceSelection(){
                 else{
                     set_personalised_loading(true)
                     console.log("sending request from getPreferenceResults hook")
-                    console.log("type of request: ", type_of_request)
-                    axios.post('https://us-central1-retail-assistant-demo.cloudfunctions.net/getPersonalisedProducts',
-                    {
-                        "available_products": (id === "mens_trousers") ? mens_trousers :  mens_t_shirts,
-                        "selected_products": selected_products,
-                        "type": type_of_request
-                    }, 
-                    {
-                        headers: {
-                            "Access-Control-Allow-Origin": "*"
-        
-                        }
-                    }
-                    ).then((result)=>{
-                        console.log("get results hooked received a result: ", result.data.result)
-                        set_personalised_results(result.data.result)
-                        set_your_choice(result.data.received)
-                        set_show_personalised_results(true)
-                        set_personalised_loading(false)
-                        return {
-                        "personalised_products": result.data.result,
-                        "status": "CHANGED"
-                        }
+                    
+                    getFile().then((file_to_upload)=>{
+                        //search for similar products
+                        let url;
+                        let data_to_send;
+                        let content_type;
+                        url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingImage"
+                        var formData = new FormData();
+                        formData.append("image", file_to_upload);
+                        // formData.append("collection", "mens_t_shirts");
+                        data_to_send = formData
+                        // data_to_send = {"image": request.u_request}
+                        content_type = "multipart/form-data"
+                        return new Promise(async (resolve, reject)=>{
+                            if(file_to_upload !== 0){
+                                try{
+                                    console.log(data_to_send, content_type)
+                                    axios.post(url, data_to_send, {
+                                        headers: {
+                                            'Content-Type': content_type
+                                        }
+                                    }).then((result)=>{
+                                        console.log("search results: ", result)
+                                        const product_results = result.data.results[0].hits
+                                        console.log("search results are: ", JSON.stringify(product_results))
+                                        resolve(product_results)
+                                        }, (err)=>{
+                                        console.log("second_error was:", err)
+                                        resolve("SERVER_ERROR")
+                                    })
+                                }
+                                catch(error){
+                                    console.log("second_error was:", error)
+                                    resolve("SERVER_ERROR")
+                                }
+                                
+                            }
+                            else{
+                                window.alert("There was an issue with your search")
+                                //navigate('/')
+                            }
+                        }).then((search_result)=>{
+                                //search for similar products
+                                if(search_result !== "SERVER_ERROR"){
+                                    
+                                    set_show_personalised_results(true)
+                                    set_personalised_results(search_result)
+                                    set_personalised_loading(false)
+                                    // set_your_choice(product_select_data[selected_products[0]])
+                                }        
+                            })
+                       
                     })
                 }
                 
@@ -105,6 +174,7 @@ function PreferenceSelection(){
     useEffect(()=>{
         
         productInitialiser()
+        
 
     },[reset])
 
@@ -131,7 +201,7 @@ function PreferenceSelection(){
 
                         <Container style={{"width": 0.85*width, "margin": "auto", "height": 0.7*height, "overflowY": "scroll"}}>
                             <Row xl={4}lg={4} md={3} sm={2} xs={2}>
-                            {product_select_data ? product_select_data.map((item, index)=>{
+                            {(product_select_data && !loading_new_choices) ? product_select_data.map((item, index)=>{
                                 return(
                                 <Col key={index}>
                                     
@@ -170,6 +240,7 @@ function PreferenceSelection(){
                             style={{"position": "fixed", "bottom": 0, "left": 0, "zIndex": 100}}
                             onClick={()=>{
                                 set_reset(reset + 1)
+                                set_loading_new_choices(true)
                             }}
                         >
                             Refresh to get new styles
@@ -193,7 +264,7 @@ function PreferenceSelection(){
                                 <Spinner animation="border"/>
                                 <h2 style={{"fontWeight": "bold"}}>Sit back whilst we create a personalised shopping experience for you </h2>
                                 <br/>
-                                <p>Note - this service uses kNN and does not <span style={{"fontWeight": "bold"}}>yet</span> use A-NN with a vector database, hence the vector similarity search may take up to 60 secs </p>
+                                <p>Note - this service may be a bit slow at the moment, it will become fast & instantaneous once the machine learning model has been cached to our server for fast real-time reads</p>
                             </div>
                         }
                     </div>
@@ -202,7 +273,7 @@ function PreferenceSelection(){
 
             {show_personalised_results && 
             <div>
-                <PersonalisedResults results={personalised_results} your_choice={your_choice}/>
+                <PersonalisedResults results={personalised_results} your_choice={product_select_data[selected_products[0]]}/>
             </div>}
 
         </div>

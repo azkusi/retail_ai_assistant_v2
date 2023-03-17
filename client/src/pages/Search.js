@@ -28,35 +28,16 @@ function Search(props) {
   function sendUserRequest(dictaphone_data){
     console.log("Search callback, dictaphone data updated: ", dictaphone_data)
 
-    if(dictaphone_data.type === "text"){
-      //send user request to home component to send to firebase
-      console.log("user request: ", dictaphone_data)
-      props.HomeCallBack(dictaphone_data)
-    }
-    else if(dictaphone_data.type === "file"){
-      props.HomeSecondCallBack(dictaphone_data)
-    }
+    console.log("user request: ", dictaphone_data)
+    props.HomeCallBack(dictaphone_data)
     
     set_show_ai_modal(false)
     set_show_ai_assistant_icon(true)
   }
 
-
-
-
-  useEffect(()=>{
-    
-    // console.log("user_request is: ", user_request)
-    // props.handleCallBack(user_result.products)
-    // console.log("user_result is: ", user_result)
-  },[])
-
   return (
     <div>
         <div style={{"width": width}} className="App">
-            {/* <Gallery images={pr}
-            //  maxRows={10} 
-            /> */}
             
             {show_ai_assistant_icon && 
             <SmartToyIcon 
@@ -75,7 +56,7 @@ function Search(props) {
                 backdrop={false}
             >
                 <Modal.Header style={{"borderLeft": "solid", "borderRight": "solid", "borderTop": "solid"}} closeButton>
-                <Modal.Title style={{"textAlign": "center"}}>Describe, or upload a T-SHIRT style you're looking for</Modal.Title>
+                <Modal.Title style={{"textAlign": "center"}}>Describe, or upload a <span style={{"textDecoration": "underline", "fontWeight": "bold"}}>T-SHIRT</span> style you're looking for</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body style={{"border": "solid"}}>
@@ -96,16 +77,16 @@ function Search(props) {
                         }} type='file'>
                     </Form.Control>
                     <Button onClick={()=>{
-                        // if(file){
-                        //   sendUserRequest({"u_request": file, "type": "file"})
-                        //   set_show_ai_modal(false) 
-                        //   set_show_ai_assistant_icon(true)
-                        // }else{
-                        //   alert("Please upload an image")
-                        //   set_show_ai_modal(false) 
-                        //   set_show_ai_assistant_icon(true)
-                        // } 
-                        window.alert("This search feature is still being built")
+                        if(file){
+                          sendUserRequest({"u_request": file, "type": "file"})
+                          set_show_ai_modal(false) 
+                          set_show_ai_assistant_icon(true)
+                        }else{
+                          alert("Please upload an image")
+                          set_show_ai_modal(false) 
+                          set_show_ai_assistant_icon(true)
+                        } 
+                        // window.alert("This search feature is still being built")
                         
                         }}>Upload</Button>
                     </Form.Group>

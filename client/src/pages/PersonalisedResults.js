@@ -37,7 +37,7 @@ function PersonalisedResults(props){
                                     index === 0 ?
                                     null :
                                     <Col key={index}>
-                                    <img alt={index} src={item.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
+                                    <img alt={index} src={item.document.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
                                     </Col>
                                 )
                                 })}
