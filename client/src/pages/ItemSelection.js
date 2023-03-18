@@ -14,6 +14,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage"
 import { mixed_clothing } from '../data/mixed_clothing';
+import { mens_clothing } from '../data/mens_clothing';
 const Typesense = require('typesense')
 
 
@@ -159,29 +160,30 @@ async function getImageEmbedding(url){
             
             {/* <Button
               onClick={async ()=>{
-                let i = 0
-                let mixed_clothes_insert = []
+                let i = 970
+                let mens_clothes_insert = []
                 // let new_mens_trousers = []
                 // let legit_count = 0;
-                for(i; i < 250; i++){
-                  console.log("i is : ", i , "mixed_clothing length is: ", mixed_clothing.length.toString())
-                  await getImageEmbedding(mixed_clothing[i]["src"])
+                console.log("mens collection length", mens_clothing.length.toString())
+                for(i; i < 3000; i++){
+                  console.log("i is : ", i , "mens_clothing length is: ", mens_clothing.length.toString())
+                  await getImageEmbedding(mens_clothing[i]["src"])
                   .then(async (embedding)=>{
                       if((embedding !== 0) ){
-                        mixed_clothes_insert.push({
+                        mens_clothes_insert.push({
                           "ID": i,
                           "vec": embedding,
-                          "name": mixed_clothing[i]["thumbnailCaption"],
-                          "src": mixed_clothing[i]["src"],
+                          "name": mens_clothing[i]["thumbnailCaption"],
+                          "src": mens_clothing[i]["src"],
                           "price": Math.floor(Math.random() * 100)
                         })
 
                         if(((i+1) % 10 === 0) && (i !== 0)){
-                          console.log("mixed_clothes_insert embeddings array: ", mixed_clothes_insert)
+                          console.log("mens_clothes_insert embeddings array: ", mens_clothes_insert)
 
                           try{
                             console.log("i is ", i)
-                            await client.collections('mixed_clothing').documents().import(mixed_clothes_insert, {action: 'create'})
+                            await client.collections('mens_clothing').documents().import(mens_clothes_insert, {action: 'create'})
                             .then((result)=>{
                               console.log("INSERT DONE", (i / 100).toString(), result)
                             }, (error)=>{
@@ -192,7 +194,7 @@ async function getImageEmbedding(url){
                             console.log("error was: ", err)
                           }
                           
-                          mixed_clothes_insert = []
+                          mens_clothes_insert = []
                         }
                       }
                       else{
@@ -215,7 +217,7 @@ async function getImageEmbedding(url){
                 
               }}
             >
-              Insert Mixed Clothing Embeddings
+              Insert Mens Clothing Embeddings
             </Button> */}
 
             

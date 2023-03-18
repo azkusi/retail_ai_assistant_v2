@@ -264,7 +264,7 @@ function PreferenceSelection(){
                                 <Spinner animation="border"/>
                                 <h2 style={{"fontWeight": "bold"}}>Sit back whilst we create a personalised shopping experience for you </h2>
                                 <br/>
-                                <p>Note - this service may be a bit slow at the moment, it will become fast & instantaneous once the machine learning model has been cached to our server for fast real-time reads</p>
+                                <p>Note - your initial request may take a while to load, because the machine learning model is being loaded from memory, subsequent responses will load quickly. We will soon cache the model on our server for fast & instantaneous responses at all times</p>
                             </div>
                         }
                     </div>

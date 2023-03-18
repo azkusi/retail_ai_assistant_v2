@@ -16,14 +16,16 @@ import "firebase/compat/firestore";
 import "firebase/compat/storage"
 import { mixed_clothing } from '../data/mixed_clothing';
 import { mens_t_shirts } from '../data/mens_t_shirts';
+import { mens_clothing } from '../data/mens_clothing';
 const Typesense = require('typesense')
 
 
 function Home() {
 
-  const [product_results, set_product_results] = useState(mens_t_shirts)
+  const [product_results, set_product_results] = useState(null)
   const [refresh_status, set_refresh_status] = useState("NO_CHANGE")
   const [search_results, set_search_results] = useState(null)
+  const [loading_new_choices, set_loading_new_choices] = useState(true)
 
   const width = useWindowSize().width
   const height = useWindowSize().height
@@ -45,6 +47,24 @@ function Home() {
 
   }
 
+  useEffect(()=>{
+        
+    productInitialiser()
+    
+
+},[])
+
+function productInitialiser(){
+  set_loading_new_choices(true)
+    let i = 0
+    let temp = []
+    for(i; i < 100; i++){
+        temp.push(mens_clothing[Math.floor(Math.random() * (mens_clothing.length - 1))])
+        set_product_results(temp)
+        set_loading_new_choices(false)
+    }
+  
+}
 
   function getSearchResults(request){
 
@@ -55,7 +75,7 @@ function Home() {
       let data_to_send;
       let content_type;
       if(request.type === "file"){
-        url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingImage"
+        url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingImage-HomePage"
         // data_to_send = {"image": request.u_request, "collection": "mens_t_shirts"}
         var formData = new FormData();
         formData.append("image", request.u_request);
@@ -66,8 +86,8 @@ function Home() {
 
         content_type = "multipart/form-data"
       }else{
-        url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingText"
-        data_to_send = {"text": request.u_request, "collection": "mens_t_shirts"}
+        url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingText-HomePage"
+        data_to_send = {"text": request.u_request, "collection": "mens_clothing"}
         content_type = "application/json"
       }
         console.log("sending request from getSearchResults function")
@@ -142,30 +162,39 @@ function Home() {
         >
           <Tab eventKey="search" title="Augmented Search">
             <div style={{"width": "100%", "margin": "auto"}}>
+
+              {!loading_new_choices ?
+              
+            
                 
-              <Container style={{"width": 0.8*width, "margin": "auto"}}>
-                <Row xl={4}lg={4} md={3} sm={3} xs={2}>
-                  {search_results ? search_results.map((item, index)=>{
-                    return( 
+                <Container style={{"width": 0.8*width, "margin": "auto"}}>
+                  <Row xl={4}lg={4} md={3} sm={3} xs={2}>
+                    {search_results ? search_results.map((item, index)=>{
+                      return( 
+                        <Col key={index}>
+                          <img alt={index} src={item.document.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
+                        </Col>
+                      )
+                    })
+                  :
+                  product_results.map((item, index)=>{
+                    return(
                       <Col key={index}>
-                        <img alt={index} src={item.document.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
+                        <img alt={index} src={item.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
                       </Col>
                     )
-                  })
+                  })}
+                  </Row>
+
+                  <Search HomeCallBack={manageSearchResults}/>
+                  {/* <Search/> */}
+
+                </Container>
+
                 :
-                product_results.map((item, index)=>{
-                  return(
-                    <Col key={index}>
-                      <img alt={index} src={item.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
-                    </Col>
-                  )
-                })}
-                </Row>
+                <Spinner animation='border'/>
 
-                <Search HomeCallBack={manageSearchResults}/>
-                {/* <Search/> */}
-
-              </Container>
+              }
 
             </div>
             
@@ -186,7 +215,7 @@ function Home() {
             <Spinner animation='border'/>
             <h2 style={{"fontWeight": "bold"}}>Sit back whilst we create a personalised shopping experience for you </h2>
             <br/>
-            <p>Note - this service may be a bit slow at the moment, it will become fast & instantaneous once the machine learning model has been cached to our server for fast real-time reads</p>
+            <p>Note - your initial request may take a while to load, because the machine learning model is being loaded from memory, subsequent responses will load quickly. We will soon cache the model on our server for fast & instantaneous responses at all times</p>
           </div>
           }
       </div>

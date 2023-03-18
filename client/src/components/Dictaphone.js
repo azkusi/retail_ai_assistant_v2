@@ -156,7 +156,8 @@ const Dictaphone = (props) => {
         >Hold to talk</button>} */}
         <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Control ref={inputRef} placeholder="Type search" type="text" plaintext={plain_text} defaultValue={transcript}/>
+          <Form.Label style={{"color": "black"}}>Type what you're looking for below:</Form.Label>
+          <Form.Control ref={inputRef} placeholder="E.g. A blue striped t-shirt / something warm for winter" type="text" plaintext={plain_text} defaultValue={transcript}/>
             {/* { edit && <Button 
               onClick={()=>{
                 set_plain_text(false)
