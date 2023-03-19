@@ -242,7 +242,7 @@ function Search(props) {
                 text_search &&
                 <div style={{"padding": "10px"}}>
 
-                  <Form>
+                  <Form style={{"margin": "30px"}}>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                       <Form.Label style={{"color": "black"}}>Type what you're looking for below:</Form.Label>
                       <br/>
@@ -256,7 +256,7 @@ function Search(props) {
                       <Form.Text style={{"position": "absolute", "left": "10px"}} className="text-muted">I'm looking for something warm for winter</Form.Text>
                       <br/>
 
-                      <Button style={{"position": "absolute", "top": 0, "left": 0}} variant="secondary" onClick={()=>{
+                      <Button style={{"position": "absolute", "top": 0, "left": 0, "margin": "10px"}} variant="secondary" onClick={()=>{
                         set_text_search(false)
                         set_options(true)   
                       }}>Back</Button>
@@ -275,7 +275,7 @@ function Search(props) {
               {
                 image_search &&
                 <div style={{"padding": "10px"}}>
-                  <Button style={{"position": "absolute", "top": 0, "left": 0}} variant="secondary" onClick={()=>{
+                  <Button style={{"position": "absolute", "top": 0, "left": 0, "margin": "10px"}} variant="secondary" onClick={()=>{
                         set_image_search(false)
                         set_options(true)   
                       }}>Back</Button>
