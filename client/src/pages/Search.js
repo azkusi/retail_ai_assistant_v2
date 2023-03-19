@@ -198,12 +198,10 @@ function Search(props) {
 
               {options && 
               <div>
-                <h3>Tell me what you're looking for and I'll find it for you</h3>
+                <h3 style={{"margin": "10px"}}>Tell me what you're looking for and I'll find it for you</h3>
                 <hr/>
-                <h5>How would you like describe what you're looking for</h5>
+                <h5 style={{"margin": "10px"}}>How would you like describe what you're looking for</h5>
 
-                <br/>
-                <br/>
                 <br/>
 
                 <Button style={{"margin": "2px"}} onClick={()=>{
@@ -213,8 +211,6 @@ function Search(props) {
                 >
                   Speech
                 </Button>
-                <br/>
-                <br/>
 
                 <Button style={{"margin": "2px"}} onClick={()=>{
                   set_text_search(true)
@@ -223,8 +219,7 @@ function Search(props) {
                 >
                   Text
                 </Button>
-                <br/>
-                <br/>
+
 
                 <Button style={{"margin": "2px"}} onClick={()=>{
                   set_image_search(true)
@@ -246,9 +241,7 @@ function Search(props) {
               {
                 text_search &&
                 <div style={{"padding": "10px"}}>
-                  <br/>
-                  <br/>
-                  <br/>
+
                   <Form>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                       <Form.Label style={{"color": "black"}}>Type what you're looking for below:</Form.Label>
@@ -262,21 +255,18 @@ function Search(props) {
                       <br/>
                       <Form.Text style={{"position": "absolute", "left": "10px"}} className="text-muted">I'm looking for something warm for winter</Form.Text>
                       <br/>
-                      <br/>
 
-                      <Button onClick={()=>{
+                      <Button style={{"position": "absolute", "top": 0, "left": 0}} variant="secondary" onClick={()=>{
+                        set_text_search(false)
+                        set_options(true)   
+                      }}>Back</Button>
+
+                      <Button style={{"margin": "20px"}} onClick={()=>{
                         console.log(inputRef.current.value)
                         sendUserRequest(inputRef ? {"u_request": inputRef.current.value, "type": "text"} 
                           : {"u_request": "", "type": "text"}
                         )
                       }}>Go</Button>
-                      <br/>
-                      <br/>
-
-                      <Button variant="secondary" onClick={()=>{
-                        set_text_search(false)
-                        set_options(true)   
-                      }}>Back</Button>
                     </Form.Group>
                     </Form>
                 </div>
@@ -285,35 +275,35 @@ function Search(props) {
               {
                 image_search &&
                 <div style={{"padding": "10px"}}>
+                  <Button style={{"position": "absolute", "top": 0, "left": 0}} variant="secondary" onClick={()=>{
+                        set_image_search(false)
+                        set_options(true)   
+                      }}>Back</Button>
                   <br/>
-                  <Form.Group>
-                    <Form.Label>Upload Image</Form.Label>
-                    <Form.Control onChange={(e)=>{
-                        set_file(e.target.files[0])
-                        console.log(e.target.files)
-                        console.log(e.target.files[0])
-                        }} type='file'>
-                    </Form.Control>
-                    <Button style={{"position": "fixed", "right": "10px", "marginRight": "10px"}} onClick={()=>{
-                        if(file){
-                          sendUserRequest({"u_request": file, "type": "file"})
-                        }else{
-                          alert("Please upload an image")
-                          set_show_ai_modal(false) 
-                          set_show_ai_assistant_icon(true)
-                        } 
-                        // window.alert("This search feature is still being built")
-                        
-                        }}>Upload</Button>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label>Upload Image</Form.Label>
+                      <Form.Control onChange={(e)=>{
+                          set_file(e.target.files[0])
+                          console.log(e.target.files)
+                          console.log(e.target.files[0])
+                          }} type='file'>
+                      </Form.Control>
+                      <Button style={{"position": "fixed", "right": "10px", "marginRight": "10px"}} onClick={()=>{
+                          if(file){
+                            sendUserRequest({"u_request": file, "type": "file"})
+                          }else{
+                            alert("Please upload an image")
+                            set_show_ai_modal(false) 
+                            set_show_ai_assistant_icon(true)
+                          } 
+                          // window.alert("This search feature is still being built")
+                          
+                          }}>Upload
+                        </Button>
                     </Form.Group>
-
-                    <br/>
-                    <br/>
-
-                    <Button variant="secondary" onClick={()=>{
-                      set_image_search(false)
-                      set_options(true)                        
-                    }}>Back</Button>
+                  </Form>
+                  
                 </div>
               }
               
