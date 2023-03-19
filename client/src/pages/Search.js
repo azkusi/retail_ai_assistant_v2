@@ -49,32 +49,32 @@ function Search(props) {
     if(width < 500){
       if(text_search || voice_search || image_search){
         setChatWidth(width * 0.85)
-        setChatHeight(height * 0.4)
+        setChatHeight(height * 0.5)
       }
       else{
         setChatWidth(width * 0.85)
-        setChatHeight(height * 0.6)
+        setChatHeight(height * 0.7)
       }
       
     }
     if(width > 500 && width < 800){
       if(text_search || voice_search || image_search){
         setChatWidth(width * 0.5)
-        setChatHeight(height * 0.25)
+        setChatHeight(height * 0.4)
       }
       else{
         setChatWidth(width * 0.5)
-        setChatHeight(height * 0.75)
+        setChatHeight(height * 0.7)
       }
     }
     if(width > 800){
       if(text_search || voice_search || image_search){
         setChatWidth(width * 0.3)
-        setChatHeight(height * 0.25)
+        setChatHeight(height * 0.3)
       }
       else{
         setChatWidth(width * 0.3)
-        setChatHeight(height * 0.6)
+        setChatHeight(height * 0.7)
       }
     }
     if(props.results){
