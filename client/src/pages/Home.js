@@ -160,7 +160,7 @@ function productInitialiser(){
           className="mb-3"
           fill
         >
-          <Tab eventKey="search" title="Augmented Search">
+          <Tab eventKey="search" title="Multi-Modal Search">
             <div style={{"width": "100%", "margin": "auto"}}>
 
               {!loading_new_choices ?
@@ -186,7 +186,7 @@ function productInitialiser(){
                   })}
                   </Row>
 
-                  <Search HomeCallBack={manageSearchResults}/>
+                  <Search HomeCallBack={manageSearchResults} SearchResults={product_results}/>
                   {/* <Search/> */}
 
                 </Container>
@@ -200,7 +200,7 @@ function productInitialiser(){
             
           </Tab>
 
-          <Tab className='center' eventKey="personalised" title="Personal Shopper">
+          <Tab className='center' eventKey="personalised" title="Similar-Style Search">
             <ItemSelection/>
           </Tab>
 
