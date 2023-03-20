@@ -227,7 +227,7 @@ function Search(props) {
                 <br/>
 
                 <Button color='info' style={{"margin": "2px"}} onClick={()=>{
-                  window.alert("This feature is still being built")
+                  window.alert("This feature is still being built, please select another option for now")
                   // set_options(false)
                 }}
                 >
