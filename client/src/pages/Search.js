@@ -1,12 +1,21 @@
 // import { Gallery } from "react-grid-gallery";
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import { useEffect, useState, useRef } from 'react';
-import { Modal, Button, Form, CloseButton, Overlay, OverlayTrigger, Spinner } from 'react-bootstrap';
+import { Modal, Form, CloseButton, Overlay, OverlayTrigger, Spinner } from 'react-bootstrap';
 import SearchResults from '../components/SearchResults';
+import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dictaphone from '../components/Dictaphone';
 import useWindowSize from "../hooks/useWindow";
 import Tooltip from 'react-bootstrap/Tooltip';
+import { Typography } from '@mui/material';
+
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+
 
 import '../App.css'
 
@@ -90,6 +99,7 @@ function Search(props) {
 
   
   function sendUserRequest(dictaphone_data){
+    
     console.log("Search callback, dictaphone data updated: ", dictaphone_data)
 
     console.log("user request: ", dictaphone_data)
@@ -99,6 +109,10 @@ function Search(props) {
     set_show_ai_assistant_icon(true)
   }
 
+
+  // function preventDefault(){
+  //   console.log("Enter button pressed")
+  // }
 
 
   return (
@@ -115,7 +129,9 @@ function Search(props) {
           
               >
                 <SmartToyIcon 
-                  style={{"position": "fixed", "bottom": 0, "right": 0, "height": 0.15*height, "width": 0.15*width}}
+                  style={{"position": "fixed", "bottom": 0, "right": 0, 
+                  "height": 0.15*height, "width": 0.15*width
+                }}
                   onClick={()=>{
                       set_show_ai_modal(true)
                       set_show_ai_assistant_icon(false)
@@ -176,13 +192,13 @@ function Search(props) {
             
             </Modal> */}
             {show_ai_modal && 
-            <div style={{"border": "solid",  "position": "fixed",
-             "bottom": "0", "right": "0",
+            <div style={{"boxShadow":"0 6px 30px 0 rgba(0, 0, 0, 0.2), 0 6px 40px 0 rgba(0, 0, 0, 0.19)",  "position": "fixed",
+             "bottom": "0", "right": "0", "borderRadius": "10px",
              "width": chatWidth, "height": chatHeight,
-              "backgroundColor": "white", "marginRight": "5px", "marginBottom": "5px"
+              "backgroundColor": "#ECECEC", "marginRight": "15px", "marginBottom": "15px"
              }}
             >
-              <div style={{"position": "absolute", "top": 0, "right": 0}} onClick={()=>{
+              <div style={{"position": "absolute", "top": "5px", "right": "5px"}} onClick={()=>{
                 set_show_ai_assistant_icon(true)
                 set_show_ai_modal(false)
                 set_text_search(false)
@@ -198,13 +214,19 @@ function Search(props) {
 
               {options && 
               <div>
-                <h3 style={{"margin": "10px"}}>Tell me what you're looking for and I'll find it for you</h3>
+                <Typography style={{"fontWeight": "bold"}} variant="h5" component="h1">
+                  TailorAI Retail Assistant
+                </Typography>
+                {/* <h3 style={{"margin": "10px"}}>TailorAI Retail Assistant</h3> */}
                 <hr/>
-                <h5 style={{"margin": "10px"}}>How would you like describe what you're looking for</h5>
+                <Typography style={{"margin": "10px"}} variant="h5" component="h1">
+                  How would you like to describe what you're looking for?
+                </Typography>
+                {/* <h5 style={{"margin": "10px"}}>How would you like describe what you're looking for</h5> */}
 
                 <br/>
 
-                <Button style={{"margin": "2px"}} onClick={()=>{
+                <Button color='info' style={{"margin": "2px"}} onClick={()=>{
                   window.alert("This feature is still being built")
                   // set_options(false)
                 }}
@@ -226,7 +248,7 @@ function Search(props) {
                   set_options(false)
                 }}
                 >
-                  Upload image
+                  Upload Image
                 </Button>
               </div>
               }
@@ -244,10 +266,13 @@ function Search(props) {
 
                   <Form style={{"margin": "30px"}}>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Typography variant="h5" component="h5">
                       <Form.Label style={{"color": "black"}}>Type what you're looking for below:</Form.Label>
+
+                    </Typography>
                       <br/>
                       <br/>
-                      <Form.Control ref={inputRef} placeholder="Type here" type="text"/>
+                      <Form.Control onKeyDown={(e)=>{e.preventDefault()}} ref={inputRef} placeholder="Type here" type="text"/>
                       <br/>
                       <Form.Text style={{"position": "absolute", "left": "10px"}} className="text-muted">Examples:</Form.Text>
                       <br/>
@@ -266,7 +291,7 @@ function Search(props) {
                         sendUserRequest(inputRef ? {"u_request": inputRef.current.value, "type": "text"} 
                           : {"u_request": "", "type": "text"}
                         )
-                      }}>Go</Button>
+                      }}>Find It</Button>
                     </Form.Group>
                     </Form>
                 </div>
@@ -287,7 +312,11 @@ function Search(props) {
                           set_file(e.target.files[0])
                           console.log(e.target.files)
                           console.log(e.target.files[0])
-                          }} type='file'>
+                          }} type='file'
+                          onKeyDown={(e)=>{
+                            e.preventDefault();
+                          }}
+                      >
                       </Form.Control>
                       <Button style={{"position": "fixed", "right": "10px", "marginRight": "10px"}} onClick={()=>{
                           if(file){
@@ -299,7 +328,7 @@ function Search(props) {
                           } 
                           // window.alert("This search feature is still being built")
                           
-                          }}>Upload
+                          }}>Find It
                         </Button>
                     </Form.Group>
                   </Form>
