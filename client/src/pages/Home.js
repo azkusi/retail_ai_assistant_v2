@@ -179,12 +179,12 @@ function productInitialiser(){
             resolve(product_results)
           }, (err)=>{
             console.log("second_error was:", err)
-            resolve("SERVER_ERROR")
+            resolve(err)
           })
         }
         catch(error){
           console.log("second_error was:", error)
-          resolve("SERVER_ERROR")
+          resolve(error)
         }
       }).then((search_result)=>{
         //search for similar products
@@ -203,7 +203,7 @@ function productInitialiser(){
         else{
           console.log("there was an issue with your search")
           set_spinner(false)
-          window.alert("There was an issue with your request, please try again")
+          window.alert("There was an issue with your request, please try again", search_result)
         }    
     })
   }

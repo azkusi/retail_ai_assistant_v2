@@ -42,7 +42,8 @@ function AudioRecorder(props){
                 setPermission(true);
                 setStream(streamData);
             } catch (err) {
-                alert(err.message);
+                //err.message
+                alert("Please ensure in your device settings that you allow this browser to access the microphone");
             }
         } else {
             alert("The MediaRecorder API is not supported in your browser.");
