@@ -64,7 +64,7 @@ function AudioRecorder(props){
            const audioUrl = URL.createObjectURL(audioBlob);
            setAudio(audioUrl);
            setAudioChunks([]);
-           props.AudioSearchCallback(audioBlob)
+        //    props.AudioSearchCallback(audioBlob)
         };
       };
 
