@@ -132,14 +132,14 @@ function AudioRecorder(props){
                     
                     ) : null}
                 </div>
-                {/* {audio ? (
+                {audio ? (
                 <div className="audio-container">
                     <audio src={audio} controls></audio>
                     <a download href={audio}>
                         Download Recording
                     </a>
                 </div>
-                ) : null} */}
+                ) : null}
 
 
                 

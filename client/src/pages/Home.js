@@ -136,6 +136,7 @@ function productInitialiser(){
           else{
             console.log("there was an issue with your search")
             //navigate('/')
+            window.alert("There was an issue with your search")
           }    
       })
         
@@ -179,12 +180,12 @@ function productInitialiser(){
             resolve(product_results)
           }, (err)=>{
             console.log("second_error was:", err)
-            resolve(err)
+            resolve("SERVER_ERROR")
           })
         }
         catch(error){
           console.log("second_error was:", error)
-          resolve(error)
+          resolve("SERVER_ERROR")
         }
       }).then((search_result)=>{
         //search for similar products
