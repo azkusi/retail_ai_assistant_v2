@@ -17,6 +17,7 @@ import "firebase/compat/storage"
 import { mixed_clothing } from '../data/mixed_clothing';
 import { mens_t_shirts } from '../data/mens_t_shirts';
 import { mens_clothing } from '../data/mens_clothing';
+import { useNavigate } from 'react-router-dom';
 const Typesense = require('typesense')
 
 
@@ -26,10 +27,13 @@ function Home() {
   const [refresh_status, set_refresh_status] = useState("NO_CHANGE")
   const [search_results, set_search_results] = useState(null)
   const [loading_new_choices, set_loading_new_choices] = useState(true)
+  const [user_request, set_user_request] = useState(null)
 
   const width = useWindowSize().width
   const height = useWindowSize().height
   const [spinner, set_spinner] = useState(false)
+  const navigate = useNavigate()
+
   let db;
   let projectStorage;
   let projectFirestore;
@@ -85,10 +89,13 @@ function productInitialiser(){
         console.log("Form Data values: ", JSON.stringify(formData.values()))
 
         content_type = "multipart/form-data"
+        set_user_request({"u_request": URL.createObjectURL(request.u_request), "type": "image"})
       }else{
         url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingText-HomePage"
         data_to_send = {"text": request.u_request, "collection": "mens_clothing"}
         content_type = "application/json"
+        set_user_request({"u_request": request.u_request, "type": "text"})
+
       }
         console.log("sending request from getSearchResults function")
         return new Promise(async (resolve, reject)=>{
@@ -148,6 +155,59 @@ function productInitialiser(){
     
   }
 
+  function AudioRequest(audio_file){
+    set_spinner(true)
+    
+    console.log("file sent is:", audio_file)
+    return new Promise(async (resolve, reject)=>{
+      try{
+        var formData = new FormData();
+        formData.append("speech", audio_file)
+        // formData.append("collection", "mens_t_shirts");
+        
+          axios.post('https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingVoice', formData, {
+            headers: {
+                'Content-Type': "multipart/form-data"
+            }
+          }).then((result)=>{
+            console.log("search results: ", result)
+            const intermediary = result.data.answer
+            const product_results = JSON.parse(intermediary)["results"][0]["hits"]  //result.data["answer"]["results"][0]["hits"]
+            console.log("search results are: ", JSON.stringify(product_results))
+            set_user_request({"u_request": result.data.u_request, "type": "speech"})
+
+            resolve(product_results)
+          }, (err)=>{
+            console.log("second_error was:", err)
+            resolve("SERVER_ERROR")
+          })
+        }
+        catch(error){
+          console.log("second_error was:", error)
+          resolve("SERVER_ERROR")
+        }
+      }).then((search_result)=>{
+        //search for similar products
+        if(search_result !== "SERVER_ERROR"){
+            
+          set_search_results(search_result)
+          set_refresh_status("CHANGED")
+          // set_your_choice(product_select_data[selected_products[0]])
+          set_spinner(false)
+          return {
+            "products": search_result,
+            "status": "CHANGED"
+          }
+          
+        } 
+        else{
+          console.log("there was an issue with your search")
+          set_spinner(false)
+          window.alert("There was an issue with your request, please try again")
+        }    
+    })
+  }
+
 
   return (
     <div style={{"width": width}} className="App">
@@ -168,25 +228,46 @@ function productInitialiser(){
             
                 
                 <Container style={{"width": 0.8*width, "margin": "auto"}}>
-                  <Row xl={4}lg={4} md={3} sm={3} xs={2}>
-                    {search_results ? search_results.map((item, index)=>{
-                      return( 
-                        <Col key={index}>
-                          <img alt={index} src={item.document.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
-                        </Col>
-                      )
-                    })
-                  :
-                  product_results.map((item, index)=>{
-                    return(
-                      <Col key={index}>
-                        <img alt={index} src={item.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
-                      </Col>
-                    )
-                  })}
-                  </Row>
+                 
+                    {search_results ? 
+                      <div>
+                        <Row xl={1}lg={1} md={1} sm={1} xs={1}>
+                          {user_request.type === "image" ?
+                          <Col>
+                          <h5>Your request:</h5>
+                            <img alt={"u_request"} src={user_request.u_request} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
+                          </Col>
+                          :
+                          <h4>Your request: {user_request.u_request}</h4>
+                        }
+                        </Row>
 
-                  <Search HomeCallBack={manageSearchResults} SearchResults={product_results}/>
+                        <Row xl={4}lg={4} md={3} sm={3} xs={2}>
+                          {search_results.map((item, index)=>{
+                            return( 
+                              <Col key={index}>
+                                <img alt={index} src={item.document.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
+                              </Col>
+                            )
+                          })}
+                        </Row>
+                        
+                      </div>
+                    :
+                    <Row xl={4}lg={4} md={3} sm={3} xs={2}>
+                      {product_results.map((item, index)=>{
+                        return(
+                          <Col key={index}>
+                            <img alt={index} src={item.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
+                          </Col>
+                        )
+                      })}
+                    </Row>
+                      
+                    }
+                  
+
+                  <Search HomeCallBack={manageSearchResults} SearchResults={product_results} AudioRequestCallback={AudioRequest}/>
                   {/* <Search/> */}
 
                 </Container>

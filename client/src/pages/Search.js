@@ -1,11 +1,10 @@
 // import { Gallery } from "react-grid-gallery";
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import { useEffect, useState, useRef } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import { Modal, Form, CloseButton, Overlay, OverlayTrigger, Spinner } from 'react-bootstrap';
-import SearchResults from '../components/SearchResults';
 import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Dictaphone from '../components/Dictaphone';
 import useWindowSize from "../hooks/useWindow";
 import Tooltip from 'react-bootstrap/Tooltip';
 import { Typography } from '@mui/material';
@@ -18,6 +17,7 @@ import '@fontsource/roboto/700.css';
 
 
 import '../App.css'
+import AudioRecorder from '../components/AudioRecorder';
 
 
 
@@ -41,6 +41,8 @@ function Search(props) {
   const inputRef = useRef(null);
   const [loading_results, set_loading_results] = useState(null)
 
+  const location = useLocation();
+  const id = useParams()
 
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -93,13 +95,13 @@ function Search(props) {
       set_image_search(false)
       set_voice_search(false)
     }
+    
 
   }, [width, height, props.results])
 
 
   
   function sendUserRequest(dictaphone_data){
-    
     console.log("Search callback, dictaphone data updated: ", dictaphone_data)
 
     console.log("user request: ", dictaphone_data)
@@ -109,10 +111,17 @@ function Search(props) {
     set_show_ai_assistant_icon(true)
   }
 
+  function sendAudioRequest(file){
+    props.AudioRequestCallback(file)
+    set_show_ai_modal(false)
+    set_show_ai_assistant_icon(true)
+  }
 
-  // function preventDefault(){
-  //   console.log("Enter button pressed")
-  // }
+
+  function cancelAudio(){
+    set_voice_search(false)
+    set_options(true)
+  }
 
 
   return (
@@ -133,8 +142,9 @@ function Search(props) {
                   "height": 0.15*height, "width": 0.15*width
                 }}
                   onClick={()=>{
-                      set_show_ai_modal(true)
-                      set_show_ai_assistant_icon(false)
+                    console.log("location: ", location, "params: ", id)
+                    set_show_ai_modal(true)
+                    set_show_ai_assistant_icon(false)
                   }}
                 />
               </OverlayTrigger>
@@ -227,8 +237,9 @@ function Search(props) {
                 <br/>
 
                 <Button color='info' style={{"margin": "2px"}} onClick={()=>{
-                  window.alert("This feature is still being built, please select another option for now")
-                  // set_options(false)
+                  // window.alert("This feature is still being built, please select another option for now")
+                  set_options(false)
+                  set_voice_search(true)
                 }}
                 >
                   Speech
@@ -256,7 +267,7 @@ function Search(props) {
               {
                 voice_search &&
                 <div>
-                
+                  <AudioRecorder AudioSearchCallback={sendAudioRequest} GoBack={cancelAudio}/>
                 </div>
               }
 
