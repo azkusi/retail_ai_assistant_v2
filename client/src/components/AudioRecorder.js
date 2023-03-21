@@ -63,7 +63,7 @@ function AudioRecorder(props){
             //creates a playable URL from the blob file.
             //const audioUrl = window.URL.createObjectURL( audioBlob );
             
-            const file = new File([audioBlob], "test.webm", { type: mimeType })
+            const file = new File([audioBlob], "test.webm", { type: mediaRecorder.mimeType })
             // var reader = new FileReader();
             // reader.readAsDataURL(file);
             // reader.onload =  function(e){
@@ -72,9 +72,9 @@ function AudioRecorder(props){
             //     setAudioChunks([]);
             // };
 
-            
-           props.AudioSearchCallback(file)
-           setAudioChunks([]);
+            setAudioChunks([]);
+            props.AudioSearchCallback(file)
+           
         };
       };
 
