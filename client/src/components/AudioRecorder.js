@@ -58,13 +58,22 @@ function AudioRecorder(props){
         //stops the recording instance
         mediaRecorder.current.stop();
         mediaRecorder.current.onstop = () => {
-          //creates a blob file from the audiochunks data
-           const audioBlob = new Blob(audioChunks, { type: mimeType });
-          //creates a playable URL from the blob file.
-           const audioUrl = URL.createObjectURL(audioBlob);
-           setAudio(audioUrl);
-           setAudioChunks([]);
-        //    props.AudioSearchCallback(audioBlob)
+            //creates a blob file from the audiochunks data
+            const audioBlob = new Blob(audioChunks, { type: mimeType });
+            //creates a playable URL from the blob file.
+            //const audioUrl = window.URL.createObjectURL( audioBlob );
+            
+            const file = new File([audioBlob], "test.webm", { type: mimeType })
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload =  function(e){
+                console.log('DataURL:', e.target.result);
+                setAudio(e.target.result);
+                setAudioChunks([]);
+            };
+
+            
+        //    props.AudioSearchCallback(audio)
         };
       };
 
