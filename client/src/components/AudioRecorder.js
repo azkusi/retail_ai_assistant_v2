@@ -64,16 +64,17 @@ function AudioRecorder(props){
             //const audioUrl = window.URL.createObjectURL( audioBlob );
             
             const file = new File([audioBlob], "test.webm", { type: mimeType })
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload =  function(e){
-                console.log('DataURL:', e.target.result);
-                setAudio(e.target.result);
-                setAudioChunks([]);
-            };
+            // var reader = new FileReader();
+            // reader.readAsDataURL(file);
+            // reader.onload =  function(e){
+            //     console.log('DataURL:', e.target.result);
+            //     setAudio(e.target.result);
+            //     setAudioChunks([]);
+            // };
 
             
-        //    props.AudioSearchCallback(audio)
+           props.AudioSearchCallback(file)
+           setAudioChunks([]);
         };
       };
 
