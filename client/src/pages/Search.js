@@ -275,7 +275,7 @@ function Search(props) {
                 text_search &&
                 <div style={{"padding": "10px"}}>
 
-                  <Form style={{"margin": "30px"}}>
+                  <Form style={{"margin": "30px"}} onSubmit={(e)=>{e.preventDefault()}}>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Typography variant="h5" component="h5">
                       <Form.Label style={{"color": "black"}}>Type what you're looking for below:</Form.Label>
@@ -283,7 +283,7 @@ function Search(props) {
                     </Typography>
                       <br/>
                       <br/>
-                      <Form.Control onKeyDown={(e)=>{e.preventDefault()}} ref={inputRef} placeholder="Type here" type="text"/>
+                      <Form.Control ref={inputRef} placeholder="Type here" type="text"/>
                       <br/>
                       <Form.Text style={{"position": "absolute", "left": "10px"}} className="text-muted">Examples:</Form.Text>
                       <br/>
@@ -316,7 +316,7 @@ function Search(props) {
                         set_options(true)   
                       }}>Back</Button>
                   <br/>
-                  <Form>
+                  <Form onSubmit={(e)=>{e.preventDefault()}}>
                     <Form.Group>
                       <Form.Label>Upload Image</Form.Label>
                       <Form.Control onChange={(e)=>{
@@ -324,9 +324,6 @@ function Search(props) {
                           console.log(e.target.files)
                           console.log(e.target.files[0])
                           }} type='file'
-                          onKeyDown={(e)=>{
-                            e.preventDefault();
-                          }}
                       >
                       </Form.Control>
                       <Button style={{"position": "fixed", "right": "10px", "marginRight": "10px"}} onClick={()=>{

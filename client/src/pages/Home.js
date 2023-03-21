@@ -201,9 +201,9 @@ function productInitialiser(){
           
         } 
         else{
-          console.log("there was an issue with your search")
+          console.log("there was an issue with your search", search_result)
           set_spinner(false)
-          window.alert("There was an issue with your request, please try again", search_result)
+          window.alert("There was an issue with your request, please try again")
         }    
     })
   }
