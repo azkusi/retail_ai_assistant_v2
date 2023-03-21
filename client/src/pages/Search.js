@@ -237,7 +237,7 @@ function Search(props) {
                 <br/>
 
                 <Button color='info' style={{"margin": "2px"}} onClick={()=>{
-                  // window.alert("This feature is still being built, please select another option for now")
+                  window.alert("Please note this feature only works on desktop devices at the moment. We are currently builiding the smartphone browser speech recognition functionality")
                   set_options(false)
                   set_voice_search(true)
                 }}
