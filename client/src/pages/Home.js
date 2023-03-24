@@ -18,6 +18,14 @@ import { mixed_clothing } from '../data/mixed_clothing';
 import { mens_t_shirts } from '../data/mens_t_shirts';
 import { mens_clothing } from '../data/mens_clothing';
 import { useNavigate } from 'react-router-dom';
+import { Typography } from '@mui/material';
+
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+
 const Typesense = require('typesense')
 
 
@@ -215,14 +223,17 @@ function productInitialiser(){
       <div style={{"opacity": spinner ? 0.2 : 1}}>
 
       
-        <Tabs
+        {/* <Tabs
           defaultActiveKey="search"
           id="fill-tab-example"
           className="mb-3"
           fill
-        >
-          <Tab eventKey="search" title="Multi-Modal Search">
+        > */}
+          {/* <Tab eventKey="search" title="Multi-Modal Search"> */}
             <div style={{"width": "100%", "margin": "auto"}}>
+              <Typography variant="h1" component="h1">
+                <h1>Demo Apparel</h1>
+              </Typography>
 
               {!loading_new_choices ?
               
@@ -280,13 +291,11 @@ function productInitialiser(){
 
             </div>
             
-          </Tab>
+          {/* </Tab> */}
 
-          <Tab className='center' eventKey="personalised" title="Similar-Style Search">
-            <ItemSelection/>
-          </Tab>
+          
 
-        </Tabs>
+        {/* </Tabs> */}
       </div>
     
     

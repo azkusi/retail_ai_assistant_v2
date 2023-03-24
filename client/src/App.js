@@ -105,6 +105,7 @@ function App() {
         <Route path="/" element={<Home />}/>
         <Route path="/preference-selection/:id" element={<PreferenceSelection/>}/>
         <Route path="/personalised-results/:id" element={<PersonalisedResults/>}/>
+        <Route path="/style-search" element={<ItemSelection/>}/>
       </Routes>
       
     </div>

@@ -1,7 +1,7 @@
 // import { Gallery } from "react-grid-gallery";
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import { useEffect, useState, useRef } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { Modal, Form, CloseButton, Overlay, OverlayTrigger, Spinner } from 'react-bootstrap';
 import Button from '@mui/material/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -36,12 +36,14 @@ function Search(props) {
   const [voice_search, set_voice_search] = useState(false)
   const [text_search, set_text_search] = useState(false)
   const [image_search, set_image_search] = useState(false)
-  const [options, set_options] = useState(true)
+  const [options, set_options] = useState(false)
   const [plain_text, set_plain_text] = useState(true)
   const inputRef = useRef(null);
   const [loading_results, set_loading_results] = useState(null)
+  const [mode_choice_stage, set_mode_choice_stage] = useState(true)
 
   const location = useLocation();
+  const navigate = useNavigate()
   const id = useParams()
 
   const renderTooltip = (props) => (
@@ -214,12 +216,45 @@ function Search(props) {
                 set_text_search(false)
                 set_image_search(false)
                 set_voice_search(false)
-                set_options(true)
+                set_options(false)
+                set_mode_choice_stage(true)
+
               }}> 
                 <CloseButton/>
               </div>
               <br/>
 
+              {mode_choice_stage &&
+                <div>
+                  <Typography style={{"fontWeight": "bold"}} variant="h5" component="h1">
+                  TailorAI Retail Assistant
+                  </Typography>
+                  {/* <h3 style={{"margin": "10px"}}>TailorAI Retail Assistant</h3> */}
+                  <hr/>
+                  <Typography style={{"margin": "10px"}} variant="h5" component="h1">
+                    How can I help?
+                  </Typography>
+                  <br/>
+                  <br/>
+                  <Button 
+                    onClick={()=>{
+                      set_mode_choice_stage(false)
+                      set_options(true)
+                    }}
+                  >
+                    Search
+                  </Button>
+                    <br/>
+                    <br/>
+                  <Button
+                    onClick={()=>{
+                      window.alert("This feature is still being built")
+                    }}
+                  >
+                    Get AI Personal Stylist Recommendations
+                  </Button>
+                </div>
+              }
               
 
               {options && 
@@ -237,12 +272,14 @@ function Search(props) {
                 <br/>
 
                 <Button color='info' style={{"margin": "2px"}} onClick={()=>{
-                  window.alert("Please note this feature only works on desktop devices at the moment. We are currently builiding the smartphone browser speech recognition functionality")
+                  // window.alert("Please note this feature only works on desktop devices at the moment. We are currently builiding the smartphone browser speech recognition functionality")
                   set_options(false)
-                  set_voice_search(true)
+                  set_mode_choice_stage(true)
+                  // set_voice_search(true)
+                  navigate('/style-search')
                 }}
                 >
-                  Speech
+                  Search by Style
                 </Button>
 
                 <Button style={{"margin": "2px"}} onClick={()=>{
@@ -250,7 +287,7 @@ function Search(props) {
                   set_options(false)
                 }}
                 >
-                  Text
+                  Search by Text
                 </Button>
 
 
@@ -259,7 +296,7 @@ function Search(props) {
                   set_options(false)
                 }}
                 >
-                  Upload Image
+                  Search by Image
                 </Button>
               </div>
               }

@@ -1,5 +1,6 @@
 /* eslint-disable no-loop-func */
 import { React, useEffect, useState } from 'react';
+import {useNavigate} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import useWindowSize from "../hooks/useWindow";
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -33,6 +34,8 @@ function ItemSelection(props) {
   const TYPESENSE_API_KEY = "0ay9AbptlTqyP2egi7V6tXYSm0fRSolX"
   const [embedding, set_embedding] = useState(null)
   // const [trousers_insert, set_trousers_insert] = useState([])
+  const navigate = useNavigate()
+
 
   // let db;
   let projectStorage;
@@ -144,109 +147,118 @@ async function getImageEmbedding(url){
 
 
   return (
+    <div>
+      
+      <Button 
+        style={{"margin": "5px", "position": "fixed", "top": "2%", "left": "2%"}} 
+        onClick={()=>{navigate('/#search')}}
+    >
+        Back
+    </Button>
     
-    <div className='center'>
-        <Dropdown >
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Select an item you're looking for
-            </Dropdown.Toggle>
+      <div className='center'>
+          <Dropdown >
+              <Dropdown.Toggle variant="success" id="dropdown-basic">
+                  Select an item you're looking for
+              </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-                <Dropdown.Item href="/preference-selection/mens_t_shirts">Men's T-Shirts</Dropdown.Item>
-                <Dropdown.Item disabled={true} href="/preference-selection/mens_trousers">Men's Trousers</Dropdown.Item>
-            </Dropdown.Menu>
-            </Dropdown>
+              <Dropdown.Menu>
+                  <Dropdown.Item href="/preference-selection/mens_t_shirts">Men's T-Shirts</Dropdown.Item>
+                  <Dropdown.Item disabled={true} href="/preference-selection/mens_trousers">Men's Trousers</Dropdown.Item>
+              </Dropdown.Menu>
+              </Dropdown>
 
-            
-            {/* <Button
-              onClick={async ()=>{
-                let i = 970
-                let mens_clothes_insert = []
-                // let new_mens_trousers = []
-                // let legit_count = 0;
-                console.log("mens collection length", mens_clothing.length.toString())
-                for(i; i < 3000; i++){
-                  console.log("i is : ", i , "mens_clothing length is: ", mens_clothing.length.toString())
-                  await getImageEmbedding(mens_clothing[i]["src"])
-                  .then(async (embedding)=>{
-                      if((embedding !== 0) ){
-                        mens_clothes_insert.push({
-                          "ID": i,
-                          "vec": embedding,
-                          "name": mens_clothing[i]["thumbnailCaption"],
-                          "src": mens_clothing[i]["src"],
-                          "price": Math.floor(Math.random() * 100)
-                        })
+              
+              {/* <Button
+                onClick={async ()=>{
+                  let i = 970
+                  let mens_clothes_insert = []
+                  // let new_mens_trousers = []
+                  // let legit_count = 0;
+                  console.log("mens collection length", mens_clothing.length.toString())
+                  for(i; i < 3000; i++){
+                    console.log("i is : ", i , "mens_clothing length is: ", mens_clothing.length.toString())
+                    await getImageEmbedding(mens_clothing[i]["src"])
+                    .then(async (embedding)=>{
+                        if((embedding !== 0) ){
+                          mens_clothes_insert.push({
+                            "ID": i,
+                            "vec": embedding,
+                            "name": mens_clothing[i]["thumbnailCaption"],
+                            "src": mens_clothing[i]["src"],
+                            "price": Math.floor(Math.random() * 100)
+                          })
 
-                        if(((i+1) % 10 === 0) && (i !== 0)){
-                          console.log("mens_clothes_insert embeddings array: ", mens_clothes_insert)
+                          if(((i+1) % 10 === 0) && (i !== 0)){
+                            console.log("mens_clothes_insert embeddings array: ", mens_clothes_insert)
 
-                          try{
-                            console.log("i is ", i)
-                            await client.collections('mens_clothing').documents().import(mens_clothes_insert, {action: 'create'})
-                            .then((result)=>{
-                              console.log("INSERT DONE", (i / 100).toString(), result)
-                            }, (error)=>{
-                              console.log("error was: ", error.importResults)
-                            })
+                            try{
+                              console.log("i is ", i)
+                              await client.collections('mens_clothing').documents().import(mens_clothes_insert, {action: 'create'})
+                              .then((result)=>{
+                                console.log("INSERT DONE", (i / 100).toString(), result)
+                              }, (error)=>{
+                                console.log("error was: ", error.importResults)
+                              })
+                            }
+                            catch(err){
+                              console.log("error was: ", err)
+                            }
+                            
+                            mens_clothes_insert = []
                           }
-                          catch(err){
-                            console.log("error was: ", err)
-                          }
-                          
-                          mens_clothes_insert = []
                         }
-                      }
-                      else{
-                        console.log("issue with embedding insert")
-                      }
-                    
-                  })
-                  
-                  // }
-                  // if(i === mens_t_shirts.length - 1){
-                  //   console.log("trousers embeddings test: ", t_shirts_insert)
-                  //   client.collections('mens_t_shirts').documents().import(t_shirts_insert, {action: 'create'})
-                  //   .then((result)=>{
-                  //     console.log("FINAL INSERT DONE", result)
-                  //   }).then(()=>{
-
-                  //   })
-                  // }
-                }
-                
-              }}
-            >
-              Insert Mens Clothing Embeddings
-            </Button> */}
-
-            
-
-            {/* <Button
-              onClick={()=>{
-                client.collections().retrieve().then((result)=>{
-                  console.log("collections: ", result)
-                    client.collections('mixed_clothing').documents().create().then((insert_result)=>{
-                      console.log("insert result: ", result)
+                        else{
+                          console.log("issue with embedding insert")
+                        }
+                      
                     })
-                })
-              }}
-            >
-              Create Collection
-            </Button>
+                    
+                    // }
+                    // if(i === mens_t_shirts.length - 1){
+                    //   console.log("trousers embeddings test: ", t_shirts_insert)
+                    //   client.collections('mens_t_shirts').documents().import(t_shirts_insert, {action: 'create'})
+                    //   .then((result)=>{
+                    //     console.log("FINAL INSERT DONE", result)
+                    //   }).then(()=>{
+
+                    //   })
+                    // }
+                  }
+                  
+                }}
+              >
+                Insert Mens Clothing Embeddings
+              </Button> */}
+
+              
+
+              {/* <Button
+                onClick={()=>{
+                  client.collections().retrieve().then((result)=>{
+                    console.log("collections: ", result)
+                      client.collections('mixed_clothing').documents().create().then((insert_result)=>{
+                        console.log("insert result: ", result)
+                      })
+                  })
+                }}
+              >
+                Create Collection
+              </Button>
 
 
-            <br/>
-            <br/>
-            <Button
-              onClick={()=>{
-                getTextEmbedding()
-              }}
-            >
-              Warm up embeddings
-            </Button> */}
-            
-    </div>  
+              <br/>
+              <br/>
+              <Button
+                onClick={()=>{
+                  getTextEmbedding()
+                }}
+              >
+                Warm up embeddings
+              </Button> */}
+              
+      </div>  
+    </div>
           
         
   );
