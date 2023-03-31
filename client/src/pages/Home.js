@@ -1,318 +1,105 @@
 import '../App.css';
-// import { Gallery } from "react-grid-gallery";
-import { product_data } from '../data/products';
-import { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css'; 
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import Search from '../pages/Search';
-import { Row, Col, Container, Spinner} from 'react-bootstrap';
+import logo from '../data/logo.png';
+import { useState } from 'react';
 import useWindowSize from '../hooks/useWindow';
-import ItemSelection from '../pages/ItemSelection';
-import axios from 'axios';
-import { firebaseApp } from '../config';
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
-import "firebase/compat/storage"
-import { mixed_clothing } from '../data/mixed_clothing';
-import { mens_t_shirts } from '../data/mens_t_shirts';
-import { mens_clothing } from '../data/mens_clothing';
-import { useNavigate } from 'react-router-dom';
-import { Typography } from '@mui/material';
-
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
-
-const Typesense = require('typesense')
+import { Modal, Dropdown, DropdownButton } from 'react-bootstrap';
+import PersonalisedResults from './PersonalisedResults';
+import TextSearch from '../components/TextSearch';
+import ImageSearch from '../components/ImageSearch';
+import StyleSearch from '../components/StyleSearch';
 
 
 function Home() {
 
-  const [product_results, set_product_results] = useState(null)
-  const [refresh_status, set_refresh_status] = useState("NO_CHANGE")
-  const [search_results, set_search_results] = useState(null)
-  const [loading_new_choices, set_loading_new_choices] = useState(true)
-  const [user_request, set_user_request] = useState(null)
-
-  const width = useWindowSize().width
-  const height = useWindowSize().height
-  const [spinner, set_spinner] = useState(false)
-  const navigate = useNavigate()
-
-  let db;
-  let projectStorage;
-  let projectFirestore;
-
-
-  if (!firebase.apps.length) {
-    firebaseApp()
-    db = firebase.firestore()
-    projectStorage = firebase.storage();
-    projectFirestore = firebase.firestore();
-  }else {
-    db = firebase.app().firestore() // if already initialized, use this one
-    projectStorage = firebase.app().storage();
-    projectFirestore = firebase.app().firestore();
-
-  }
-
-  useEffect(()=>{
-        
-    productInitialiser()
+    const [mode, setMode] = useState("Text")
+    const [selectedButton, setSelectedButton] = useState("Text");
+    const [show_home_items, set_show_home_items] = useState(true)
     
+    const [gender, set_gender] = useState("mens")
 
-},[])
-
-function productInitialiser(){
-  set_loading_new_choices(true)
-    let i = 0
-    let temp = []
-    for(i; i < 100; i++){
-        temp.push(mens_clothing[Math.floor(Math.random() * (mens_clothing.length - 1))])
-        set_product_results(temp)
-        set_loading_new_choices(false)
-    }
   
-}
 
-  function getSearchResults(request){
-
-    console.log("Request received: ", request)
-        
-    if((request.u_request !== null) && (request.u_request !== undefined)){
-      let url;
-      let data_to_send;
-      let content_type;
-      if(request.type === "file"){
-        url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingImage-HomePage"
-        // data_to_send = {"image": request.u_request, "collection": "mens_t_shirts"}
-        var formData = new FormData();
-        formData.append("image", request.u_request);
-        // formData.append("collection", "mens_t_shirts");
-        data_to_send = formData
-        // data_to_send = {"image": request.u_request}
-        console.log("Form Data values: ", JSON.stringify(formData.values()))
-
-        content_type = "multipart/form-data"
-        set_user_request({"u_request": URL.createObjectURL(request.u_request), "type": "image"})
-      }else{
-        url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingText-HomePage"
-        data_to_send = {"text": request.u_request, "collection": "mens_clothing"}
-        content_type = "application/json"
-        set_user_request({"u_request": request.u_request, "type": "text"})
-
-      }
-        console.log("sending request from getSearchResults function")
-        return new Promise(async (resolve, reject)=>{
-          try{
-            console.log(data_to_send, content_type)
-            axios.post(url, data_to_send, {
-              headers: {
-                'Content-Type': content_type
-              }
-            }).then((result)=>{
-              console.log("search results: ", result)
-              const product_results = result.data.results[0].hits
-              console.log("search results are: ", JSON.stringify(product_results))
-              resolve(product_results)
-            }, (err)=>{
-              console.log("second_error was:", err)
-              resolve("SERVER_ERROR")
-            })
-          }
-          catch(error){
-            console.log("second_error was:", error)
-            resolve("SERVER_ERROR")
-          }
-        }).then((search_result)=>{
-          //search for similar products
-          if(search_result !== "SERVER_ERROR"){
-              
-            set_search_results(search_result)
-            set_refresh_status("CHANGED")
-            // set_your_choice(product_select_data[selected_products[0]])
-            set_spinner(false)
-            return {
-              "products": search_result,
-              "status": "CHANGED"
-            }
-            
-          } 
-          else{
-            console.log("there was an issue with your search")
-            //navigate('/')
-            window.alert("There was an issue with your search")
-          }    
-      })
-        
-    }    
-}
+  const handleButtonClick = (button) => {
+    set_show_home_items(true)
+    setSelectedButton(button);
+    setMode(button)
+  };
 
 
- 
+//   function checkMode(mode){
+    
+//         if(mode === "Style"){
+//             setMode("Style")
+//         }
+//         else if(mode === "Text"){
+//             setMode("Text")
+//         }else{
+//             setMode("Image")
+//         }
+//     }
 
-  function manageSearchResults(request){
-    console.log("App callback, request received: ", request)
-    if(request){
-      set_spinner(true)
-      getSearchResults(request)
+
+    function removeHomeItems(){
+        set_show_home_items(false)
     }
-    //
-    
-  }
-
-  function AudioRequest(audio_file){
-    set_spinner(true)
-    
-    console.log("file sent is:", audio_file)
-    return new Promise(async (resolve, reject)=>{
-      try{
-        var formData = new FormData();
-        formData.append("speech", audio_file)
-        // formData.append("collection", "mens_t_shirts");
-        
-          axios.post('https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingVoice', formData, {
-            headers: {
-                'Content-Type': "multipart/form-data"
-            }
-          }).then((result)=>{
-            console.log("search results: ", result)
-            const intermediary = result.data.answer
-            const product_results = JSON.parse(intermediary)["results"][0]["hits"]  //result.data["answer"]["results"][0]["hits"]
-            console.log("search results are: ", JSON.stringify(product_results))
-            set_user_request({"u_request": result.data.u_request, "type": "speech"})
-
-            resolve(product_results)
-          }, (err)=>{
-            console.log("second_error was:", err)
-            resolve("SERVER_ERROR")
-          })
-        }
-        catch(error){
-          console.log("second_error was:", error)
-          resolve("SERVER_ERROR")
-        }
-      }).then((search_result)=>{
-        //search for similar products
-        if(search_result !== "SERVER_ERROR"){
-            
-          set_search_results(search_result)
-          set_refresh_status("CHANGED")
-          // set_your_choice(product_select_data[selected_products[0]])
-          set_spinner(false)
-          return {
-            "products": search_result,
-            "status": "CHANGED"
-          }
-          
-        } 
-        else{
-          console.log("there was an issue with your search", search_result)
-          set_spinner(false)
-          window.alert("Please ensure you are using this feature on a desktop not a smartphone, whilst smartphone speech functionality is still being built")
-        }    
-    })
-  }
 
 
-  return (
-    <div style={{"width": width}} className="App">
-      <div style={{"opacity": spinner ? 0.2 : 1}}>
+  return(
+    <div>
+        {(mode !== "Style") && 
+            <div style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", height: "100vh", marginTop: "30vh"}}>
+                {show_home_items && <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                    <img src={logo} alt="TailorAI Logo" style={{height: "50px", width: "50px"}} />
+                    <h1 style={{marginRight: "10px"}}>ailorAI</h1>
+                </div>}
 
-      
-        {/* <Tabs
-          defaultActiveKey="search"
-          id="fill-tab-example"
-          className="mb-3"
-          fill
-        > */}
-          {/* <Tab eventKey="search" title="Multi-Modal Search"> */}
-            <div style={{"width": "100%", "margin": "auto"}}>
-              <Typography variant="h1" component="h1">
-                <h1>Demo Apparel</h1>
-              </Typography>
-
-              {!loading_new_choices ?
-              
-            
+                {show_home_items && <h4 style={{textAlign: "center", marginTop: "20px", marginBottom: "10px"}}>Search for your favourite products</h4>}
                 
-                <Container style={{"width": 0.8*width, "margin": "auto"}}>
-                 
-                    {search_results ? 
-                      <div>
-                        <Row xl={1}lg={1} md={1} sm={1} xs={1}>
-                          {user_request.type === "image" ?
-                          <Col>
-                          <h5>Your request:</h5>
-                            <img alt={"u_request"} src={user_request.u_request} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
-                          </Col>
-                          :
-                          <h4>Your request: {user_request.u_request}</h4>
-                        }
-                        </Row>
+                <div className="container">
+                    <div className="row justify-content-center align-items-center">
+                        <div className="col-md-6">
+                            {(mode === "Text") && <TextSearch showHomeCallback={removeHomeItems} backCallback={handleButtonClick}/>}
+                            {(mode === "Image") && <ImageSearch showHomeCallback={removeHomeItems} backCallback={handleButtonClick}/>}
+                            
+                            <br/>
+                            <br/>
 
-                        <Row xl={4}lg={4} md={3} sm={3} xs={2}>
-                          {search_results.map((item, index)=>{
-                            return( 
-                              <Col key={index}>
-                                <img alt={index} src={item.document.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
-                              </Col>
-                            )
-                          })}
-                        </Row>
-                        
-                      </div>
-                    :
-                    <Row xl={4}lg={4} md={3} sm={3} xs={2}>
-                      {product_results.map((item, index)=>{
-                        return(
-                          <Col key={index}>
-                            <img alt={index} src={item.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
-                          </Col>
-                        )
-                      })}
-                    </Row>
-                      
-                    }
-                  
-
-                  <Search HomeCallBack={manageSearchResults} SearchResults={product_results} AudioRequestCallback={AudioRequest}/>
-                  {/* <Search/> */}
-
-                </Container>
-
-                :
-                <Spinner animation='border'/>
-
-              }
+                            {show_home_items && 
+                                <Dropdown >
+                                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                        Choose your search method
+                                    </Dropdown.Toggle>
+                    
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={()=>{handleButtonClick("Text")}}>Search by Text</Dropdown.Item>
+                                        <Dropdown.Item onClick={()=>{handleButtonClick("Image")}}>Search by Image</Dropdown.Item>
+                                        <Dropdown.Item onClick={()=>{handleButtonClick("Style")}}>Search by Style</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            }
+                        </div>
+                    </div>
+                </div>
 
             </div>
-            
-          {/* </Tab> */}
+        }
 
-          
+        
+        {(mode === "Style") && 
+            <StyleSearch backCallback={handleButtonClick}/>   
+        }
 
-        {/* </Tabs> */}
-      </div>
-    
-    
-
-      <div className='center'>
-          {spinner && 
-          <div>
-            <Spinner animation='border'/>
-            <h2 style={{"fontWeight": "bold"}}>Sit back whilst we create a personalised shopping experience for you </h2>
-            <br/>
-            <p>Note - your initial request may take a while to load, because the machine learning model is being loaded from memory, subsequent responses will load quickly. We will soon cache the model on our server for fast & instantaneous responses at all times</p>
-          </div>
-          }
-      </div>
-      
+        {(mode === "Voice") && 
+            <div className="input-group mb-3">
+                <input type="text" className="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2" />
+                <button className="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+            </div>
+        }
     </div>
-  );
+
+
+
+  )
 }
 
 export default Home;

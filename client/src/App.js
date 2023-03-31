@@ -4,12 +4,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import useWindowSize from './hooks/useWindow';
 import ItemSelection from './pages/ItemSelection';
 import { Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
 import PreferenceSelection from './pages/PreferenceSelection';
 import PersonalisedResults from './pages/PersonalisedResults';
 import axios from 'axios';
 import { mens_t_shirts } from './data/mens_t_shirts';
 import { SearchClient as TypesenseSearchClient } from "typesense";
+import TextResults from './pages/TextResults';
+import ImageResults from './pages/ImageResults';
+
+import Home from './pages/Home';
 
 
 
@@ -102,7 +105,10 @@ function App() {
     <div style={{"width": width}} className="App">
 
       <Routes>
+        {/* <Route path="/" element={<Results />}/> */}
         <Route path="/" element={<Home />}/>
+        <Route path="/text-search-results/:id" element={<TextResults/>}/>
+        <Route path="/image-search-results/:id" element={<TextResults/>}/>
         <Route path="/preference-selection/:id" element={<PreferenceSelection/>}/>
         <Route path="/personalised-results/:id" element={<PersonalisedResults/>}/>
         <Route path="/style-search" element={<ItemSelection/>}/>
