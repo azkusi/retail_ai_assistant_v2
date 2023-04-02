@@ -3,7 +3,6 @@ import logo from '../data/logo.png';
 import { useState } from 'react';
 import useWindowSize from '../hooks/useWindow';
 import { Modal, Dropdown, DropdownButton } from 'react-bootstrap';
-import PersonalisedResults from './PersonalisedResults';
 import TextSearch from '../components/TextSearch';
 import ImageSearch from '../components/ImageSearch';
 import StyleSearch from '../components/StyleSearch';
@@ -53,7 +52,7 @@ function Home() {
                     <h1 style={{marginRight: "10px"}}>ailorAI</h1>
                 </div>}
 
-                {show_home_items && <h4 style={{textAlign: "center", marginTop: "20px", marginBottom: "10px"}}>Search for your favourite products</h4>}
+                {show_home_items && <h4 style={{textAlign: "center", marginTop: "20px", marginBottom: "10px"}}>Retail AI Search Engine</h4>}
                 
                 <div className="container">
                     <div className="row justify-content-center align-items-center">
@@ -72,7 +71,7 @@ function Home() {
                     
                                     <Dropdown.Menu>
                                         <Dropdown.Item onClick={()=>{handleButtonClick("Text")}}>Search by Text</Dropdown.Item>
-                                        <Dropdown.Item onClick={()=>{handleButtonClick("Image")}}>Search by Image</Dropdown.Item>
+                                        {/* <Dropdown.Item onClick={()=>{handleButtonClick("Image")}}>Search by Image</Dropdown.Item> */}
                                         <Dropdown.Item onClick={()=>{handleButtonClick("Style")}}>Search by Style</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>

@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import { Row, Col, Container, Spinner, Button, Modal} from 'react-bootstrap';
 import useWindowSize from '../hooks/useWindow';
-import ItemSelection from './ItemSelection';
 import axios from 'axios';
 import { firebaseApp } from '../config';
 import firebase from "firebase/compat/app";
@@ -65,90 +64,6 @@ function TextResults() {
 
 },[])
 
-// function productInitialiser(){
-//   set_loading_new_choices(true)
-//     let i = 0
-//     let temp = []
-//     for(i; i < 100; i++){
-//         temp.push(mens_clothing[Math.floor(Math.random() * (mens_clothing.length - 1))])
-//         set_product_results(temp)
-//         set_loading_new_choices(false)
-//     }
-  
-// }
-
-//   function getSearchResults(request){
-
-//     console.log("Request received: ", request)
-        
-//     if((request.u_request !== null) && (request.u_request !== undefined)){
-//       let url;
-//       let data_to_send;
-//       let content_type;
-//       if(request.type === "file"){
-//         url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingImage-HomePage"
-//         // data_to_send = {"image": request.u_request, "collection": "mens_t_shirts"}
-//         var formData = new FormData();
-//         formData.append("image", request.u_request);
-//         // formData.append("collection", "mens_t_shirts");
-//         data_to_send = formData
-//         // data_to_send = {"image": request.u_request}
-//         console.log("Form Data values: ", JSON.stringify(formData.values()))
-
-//         content_type = "multipart/form-data"
-//         set_user_request({"u_request": URL.createObjectURL(request.u_request), "type": "image"})
-//       }else{
-//         url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingText-HomePage"
-//         data_to_send = {"text": request.u_request, "collection": "mens_clothing"}
-//         content_type = "application/json"
-//         set_user_request({"u_request": request.u_request, "type": "text"})
-
-//       }
-//         console.log("sending request from getSearchResults function")
-//         return new Promise(async (resolve, reject)=>{
-//           try{
-//             console.log(data_to_send, content_type)
-//             axios.post(url, data_to_send, {
-//               headers: {
-//                 'Content-Type': content_type
-//               }
-//             }).then((result)=>{
-//               console.log("search results: ", result)
-//               const product_results = result.data.results[0].hits
-//               console.log("search results are: ", JSON.stringify(product_results))
-//               resolve(product_results)
-//             }, (err)=>{
-//               console.log("second_error was:", err)
-//               resolve("SERVER_ERROR")
-//             })
-//           }
-//           catch(error){
-//             console.log("second_error was:", error)
-//             resolve("SERVER_ERROR")
-//           }
-//         }).then((search_result)=>{
-//           //search for similar products
-//           if(search_result !== "SERVER_ERROR"){
-              
-//             set_search_results(search_result)
-//             set_refresh_status("CHANGED")
-//             // set_your_choice(product_select_data[selected_products[0]])
-//             set_spinner(false)
-//             return {
-//               "products": search_result,
-//               "status": "CHANGED"
-//             }
-            
-//           } 
-//           else{
-//             console.log("there was an issue with your search")
-//             //navigate('/')
-//             window.alert("There was an issue with your search")
-//           }    
-//       })
-        
-//     }    
-// }
 
 
  
@@ -156,7 +71,9 @@ function sendUserRequest(data){
   set_spinner(true)
   // props.showHomeCallback("false")
   var url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingText-HomePage"
-  var data_to_send = {"text": data, "collection": "mens_clothing"}
+  // var data_to_send = {"text": data, "collection": "all_clothing"}
+  var data_to_send = {"text": data, "collection": "womens_clothing"}
+
   var content_type = "application/json"
   set_user_request(data)
   return new Promise(async (resolve, reject)=>{
@@ -202,69 +119,6 @@ function sendUserRequest(data){
   })          
 }
 
-  // function manageSearchResults(request){
-  //   console.log("App callback, request received: ", request)
-  //   if(request){
-  //     set_spinner(true)
-  //     getSearchResults(request)
-  //   }
-  //   //
-    
-  // }
-
-  // function AudioRequest(audio_file){
-  //   set_spinner(true)
-    
-  //   console.log("file sent is:", audio_file)
-  //   return new Promise(async (resolve, reject)=>{
-  //     try{
-  //       var formData = new FormData();
-  //       formData.append("speech", audio_file)
-  //       // formData.append("collection", "mens_t_shirts");
-        
-  //         axios.post('https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingVoice', formData, {
-  //           headers: {
-  //               'Content-Type': "multipart/form-data"
-  //           }
-  //         }).then((result)=>{
-  //           console.log("search results: ", result)
-  //           const intermediary = result.data.answer
-  //           const product_results = JSON.parse(intermediary)["results"][0]["hits"]  //result.data["answer"]["results"][0]["hits"]
-  //           console.log("search results are: ", JSON.stringify(product_results))
-  //           set_user_request({"u_request": result.data.u_request, "type": "speech"})
-
-  //           resolve(product_results)
-  //         }, (err)=>{
-  //           console.log("second_error was:", err)
-  //           resolve("SERVER_ERROR")
-  //         })
-  //       }
-  //       catch(error){
-  //         console.log("second_error was:", error)
-  //         resolve("SERVER_ERROR")
-  //       }
-  //     }).then((search_result)=>{
-  //       //search for similar products
-  //       if(search_result !== "SERVER_ERROR"){
-            
-  //         set_search_results(search_result)
-  //         set_refresh_status("CHANGED")
-  //         // set_your_choice(product_select_data[selected_products[0]])
-  //         set_spinner(false)
-  //         return {
-  //           "products": search_result,
-  //           "status": "CHANGED"
-  //         }
-          
-  //       } 
-  //       else{
-  //         console.log("there was an issue with your search", search_result)
-  //         set_spinner(false)
-  //         window.alert("Please ensure you are using this feature on a desktop not a smartphone, whilst smartphone speech functionality is still being built")
-  //       }    
-  //   })
-  // }
-
 
   return (
     <div style={{"width": width}} className="App">
@@ -299,12 +153,14 @@ function sendUserRequest(data){
                                 console.log("item is:", item)
                                 set_preview_item(item.document)
                               }} 
-                              
+                              key={index}
                               to="#"
                               // to={item.document.retailer_url}
                           >
-                              <img alt={index} src={item.document.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
-                              <label>{item.document.name}</label>
+                              <img alt={index} src={item.document["product_image_url"]} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
+                              <label>{item.document["description"]}</label>
+                              <label>£{item.document["price"]}</label>
+
                           </Link>
                         )
                       })}
@@ -317,14 +173,21 @@ function sendUserRequest(data){
                       <Modal.Header closeButton/>
                       <Modal.Body style={{"textAlign": "center"}}>
                           {/* <img alt={preview_item.name} src={preview_item.src} style={{"maxHeight": 0.5*height, "maxWidth": 0.5*width, "padding": "10px"}}/> */}
-                        <img alt={preview_item.name} src={preview_item.src} style={{"maxHeight": 0.5*height, "maxWidth": 0.5*width, "padding": "10px"}}/>
-                        <h5>{preview_item.name}</h5>
+                        <img alt={preview_item["description"]} src={preview_item["product_image_url"]} style={{"maxHeight": 0.5*height, "maxWidth": 0.5*width, "padding": "10px"}}/>
+                        <h5>{preview_item["description"]}</h5>
+                        <label>£{preview_item["price"]}</label>
+
                       </Modal.Body>
                       <Modal.Footer>
                           {/* <Button variant="secondary" onClick={handleClose}>
                               Add to Saved
                           </Button> */}
-                          <Button variant="primary" onClick={()=>{set_preview(false)}}>
+                          <Button variant="primary" 
+                            onClick={()=>{
+                              // set_preview(false)
+                              window.open(preview_item["product_url"], "_blank")
+                            }}
+                          >
                               View on Retailer's Site
                               {/* View on {item.document.retailer_name} */}
                           </Button>
@@ -350,9 +213,7 @@ function sendUserRequest(data){
           {spinner && 
           <div>
             <Spinner animation='border'/>
-            <h2 style={{"fontWeight": "bold"}}>Sit back whilst we create a personalised shopping experience for you </h2>
-            <br/>
-            <p>Note - your initial request may take a while to load, because the machine learning model is being loaded from memory, subsequent responses will load quickly. We will soon cache the model on our server for fast & instantaneous responses at all times</p>
+            <h2 style={{"fontWeight": "bold"}}>Loading your results</h2>
           </div>
           }
       </div>

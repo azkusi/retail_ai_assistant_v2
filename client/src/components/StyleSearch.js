@@ -3,11 +3,11 @@ import { useState } from "react";
 import { mens_clothing } from "../data/mens_clothing";
 import { mens_t_shirts } from "../data/mens_t_shirts";
 import { mens_trousers } from "../data/mens_trousers";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import useWindowSize from "../hooks/useWindow";
-import PersonalisedResults from "../pages/PersonalisedResults";
 import { Container, Form, Modal, Row, Col, Button, Spinner } from 'react-bootstrap';
+import { plt_womens_clothing } from "../data/PLT_1_240";
 
 function StyleSearch(props){
     const [selected_categories, set_selected_categories] = useState([])
@@ -23,6 +23,9 @@ function StyleSearch(props){
     const [loading_new_choices, set_loading_new_choices] = useState(false)
     const [preview, set_preview] = useState(false)
     const [preview_item, set_preview_item] = useState(null)
+
+    const { id } = useParams()
+
 
     useEffect(()=>{
         
@@ -40,7 +43,7 @@ function StyleSearch(props){
 
 
     function productInitialiser(){
-        if(props.gender === "MENS"){
+        if(gender === "MENS"){
             console.log("mens_trousers")
             let i = 0
             let temp = []
@@ -49,139 +52,45 @@ function StyleSearch(props){
                 set_product_select_data(temp)
                 set_loading_new_choices(false)
             }
-        }else{
-            console.log("mens_t_shirts")
+        }else if(gender === "WOMENS"){ 
+            console.log("womens_clothing")
             let i = 0
             let temp = []
             for(i; i < 20; i++){
-                temp.push(mens_t_shirts[Math.floor(Math.random() * (mens_t_shirts.length - 1))])
+                temp.push(plt_womens_clothing[0]["products"][Math.floor(Math.random() * (plt_womens_clothing[0]["products"].length - 1))])
                 set_product_select_data(temp)
                 set_loading_new_choices(false)
             }
+
         }
         
     }
 
-
-
-    // function getPreferenceResults(){
-    //     let chosen_categories = []
-    //     if(props.gender === "MENS"){
-    //         // mens_clothing
-    //         let i = 0;
-    //         for(i; i < 50; i++){
-    //             if(!selected_categories.includes(mens_clothing[i])){
-    //                 set_selected_categories([...selected_categories, mens_clothing[i]])
-    //             }
-    //         }
-    //     }
-    //     else{
-    //         // womens_clothing
-    //         let i = 0;
-    //         for(i; i < 50; i++){
-    //             if(!selected_categories.includes(mens_clothing[i])){
-    //                 chosen_categories.push(mens_clothing[i])
-    //             }
-    //         }
-    //     }
-    
-    //     let type_of_request;
-    //     if(props.gender === "mens"){
-    //         // type_of_request = "mens_clothing"
-    //         type_of_request = "mens_trousers"
-    //     }else{
-    //         // type_of_request = "womens_clothing"
-    //         type_of_request = "mens_t_shirts"
-    //     }
-    
-    //     console.log("Request received: ", selected_categories)
-        
-    //     // useEffect(()=>{
-            
-    //     if((chosen_categories !== null) && (chosen_categories !== undefined)){
-    
-    //         set_personalised_loading(true)
-    //         console.log("sending request from getPreferenceResults hook")
-            
-            
-    //         //search for similar products
-    //         let url;
-    //         let data_to_send;
-    //         let content_type;
-    //         url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingImage"
-    //         data_to_send = {"categories": selected_categories, "collection": "mens_clothing"}
-    //         content_type = "application/json"
-            
-    //         return new Promise(async (resolve, reject)=>{
-    //             if(selected_categories.length > 0){
-    //                 try{
-    //                     console.log(data_to_send, content_type)
-    //                     axios.post(url, data_to_send, {
-    //                         headers: {
-    //                             'Content-Type': content_type
-    //                         }
-    //                     }).then((result)=>{
-    //                         console.log("search results: ", result)
-    //                         const product_results = result.data.results[0].hits
-    //                         console.log("search results are: ", JSON.stringify(product_results))
-    //                         resolve(product_results)
-    //                         }, (err)=>{
-    //                         console.log("second_error was:", err)
-    //                         resolve("SERVER_ERROR")
-    //                     })
-    //                 }
-    //                 catch(error){
-    //                     console.log("second_error was:", error)
-    //                     resolve("SERVER_ERROR")
-    //                 }
-                    
-    //             }
-    //             else{
-    //                 window.alert("Please make sure you select an item")
-    //                 //navigate('/')
-    //             }
-    //         }).then((search_result)=>{
-    //                 //search for similar products
-    //                 if(search_result !== "SERVER_ERROR"){
-                        
-    //                     set_show_personalised_results(true)
-    //                     set_personalised_results(search_result)
-    //                     set_personalised_loading(false)
-    //                 } 
-    //                 else{
-    //                     set_show_personalised_results(true)
-    //                     set_personalised_results("SEARCH_ERROR")
-    //                     set_personalised_loading(false)
-    //                 }       
-    //             })
-                
-           
-            
-            
-    //     }
-    //     else{
-    //         window.alert("Please choose a style you'd like to search for")
-    //     }
-            
-    // }
-
     async function getFile(){
         const selection_query = product_select_data[selected_categories[0]]
-        let url = selection_query["src"]
+        let url = selection_query["product_image_url"]
         return new Promise(async (resolve, reject)=>{
-          url = url + "?not-from-cache-please";
+
           try{
-            const response = await axios.get(url, {
-              responseType: 'blob'
+            let type_of_request;
+            if(gender === "WOMENS"){
+                type_of_request = "womens_clothing"
+            }else{
+                //MENS
+                type_of_request = "mens_clothing"
+            }
+            const response = await axios.post("https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingImage-using-buffer", {
+                    "url": url,
+                    "collection": type_of_request
             })
             if(response.status === 200){
-                console.log("image response: ", response)
+                console.log("search result: ", response.data)
                 // resolve(1)
                 // const blob_data = response.data
-                const file = new File([response.data], "test.jpg")
-                console.log("blob is", response.data)
-                console.log("file is ", file)
-                resolve(file)
+                // const file = new File([response.data], "test.jpg")
+                // console.log("blob is", response.data)
+                // console.log("file is ", file)
+                resolve(response.data)
               
             }
             if(response.status === 404){
@@ -199,15 +108,16 @@ function StyleSearch(props){
           
       }
 
+
     function getPreferenceResults(){
         // const [result_to_send, set_result_to_send] = useState(product_data)
         // const [status, set_status] = useState("NO_CHANGE")
-        let type_of_request;
-        if(props.gender === "MENS"){
-            type_of_request = "mens_trousers"
-        }else{
-            type_of_request = "mens_t_shirts"
-        }
+        // let type_of_request;
+        // if(id === "mens_trousers"){
+        //     type_of_request = "mens_trousers"
+        // }else{
+        //     type_of_request = "mens_t_shirts"
+        // }
     
         console.log("Request received: ", selected_categories)
         
@@ -221,58 +131,19 @@ function StyleSearch(props){
                     set_personalised_loading(true)
                     console.log("sending request from getPreferenceResults hook")
                     
-                    getFile().then((file_to_upload)=>{
+                    getFile()
+                    .then((search_result)=>{
                         //search for similar products
-                        let url;
-                        let data_to_send;
-                        let content_type;
-                        url = "https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingImage"
-                        var formData = new FormData();
-                        formData.append("image", file_to_upload);
-                        // formData.append("collection", "mens_t_shirts");
-                        data_to_send = formData
-                        // data_to_send = {"image": request.u_request}
-                        content_type = "multipart/form-data"
-                        return new Promise(async (resolve, reject)=>{
-                            if(file_to_upload !== 0){
-                                try{
-                                    console.log(data_to_send, content_type)
-                                    axios.post(url, data_to_send, {
-                                        headers: {
-                                            'Content-Type': content_type
-                                        }
-                                    }).then((result)=>{
-                                        console.log("search results: ", result)
-                                        const product_results = result.data.results[0].hits
-                                        console.log("search results are: ", JSON.stringify(product_results))
-                                        resolve(product_results)
-                                        }, (err)=>{
-                                        console.log("second_error was:", err)
-                                        resolve("SERVER_ERROR")
-                                    })
-                                }
-                                catch(error){
-                                    console.log("second_error was:", error)
-                                    resolve("SERVER_ERROR")
-                                }
-                                
-                            }
-                            else{
-                                window.alert("There was an issue with your search")
-                                //navigate('/')
-                            }
-                        }).then((search_result)=>{
-                                //search for similar products
-                                if(search_result !== "SERVER_ERROR"){
-                                    
-                                    set_show_personalised_results(true)
-                                    set_personalised_results(search_result)
-                                    set_personalised_loading(false)
-                                    // set_your_choice(product_select_data[selected_products[0]])
-                                }        
-                            })
-                       
+                        if(search_result !== "SERVER_ERROR"){
+                            
+                            set_show_personalised_results(true)
+                            set_personalised_results(search_result.results[0].hits)
+                            set_personalised_loading(false)
+                            // set_your_choice(product_select_data[selected_products[0]])
+                        }        
                     })
+                       
+                    //})
                 }
                 
                 
@@ -282,6 +153,7 @@ function StyleSearch(props){
             }
             
     }
+
 
 
 
@@ -299,12 +171,22 @@ function StyleSearch(props){
 
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
                     <div>
-                        <button className={`btn btn-primary mx-2`} onClick={() => set_gender("WOMENS")}>
+                        <button className={`btn btn-primary mx-2`} 
+                            onClick={() => {
+                                set_gender("WOMENS")
+                                set_reset(reset + 1)
+                            }}
+                        >
                         View Womens Clothing
                         </button>
 
-                        <button className={`btn btn-primary mx-2`} onClick={() => set_gender("MENS")}>
-                        View Mens Clothing
+                        <button className={`btn btn-primary mx-2`} 
+                            onClick={() => {
+                                set_gender("MENS")
+                                set_reset(reset + 1)
+                            }}
+                        >
+                            View Mens Clothing
                         </button>
                     </div>
                 </div>
@@ -359,8 +241,9 @@ function StyleSearch(props){
                                         to="#"
                                         // to={item.document.retailer_url}
                                     >
-                                        <img alt={index} src={item.document.src} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
-                                        <label>{item.document.name}</label>
+                                        <img alt={index} src={item.document["product_image_url"]} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
+                                        <label>{item.document["description"]}</label>
+                                        <label>£{item.document["price"]}</label>
                                     </Link>
                                     
 
@@ -372,15 +255,20 @@ function StyleSearch(props){
                             {preview && <Modal show onHide={()=>{set_preview(false)}}>
                                 <Modal.Header closeButton/>
                                 <Modal.Body style={{textAlign: "center"}}>
-                                    <img alt={preview_item.name} src={preview_item.src} style={{"maxHeight": 0.5*height, "maxWidth": 0.5*width, "padding": "10px"}}/>
+                                    <img alt={preview_item["description"]} src={preview_item["product_image_url"]} style={{"maxHeight": 0.5*height, "maxWidth": 0.5*width, "padding": "10px"}}/>
                                     <br/>
-                                    <h5>{preview_item.name}</h5>
+                                    <h5>{preview_item["description"]}</h5>
+                                    <label>£{preview_item["price"]}</label>
                                 </Modal.Body>
                                 <Modal.Footer>
                                     {/* <Button variant="secondary" onClick={handleClose}>
                                         Add to Saved
                                     </Button> */}
-                                    <Button variant="primary" onClick={()=>{set_preview(false)}}>
+                                    <Button variant="primary" 
+                                        onClick={()=>{
+                                            // set_preview(false)
+                                            window.open(preview_item["product_url"], "_blank")
+                                        }}>
                                         View on Retailer's Site
                                         {/* View on {item.document.retailer_name} */}
                                     </Button>
@@ -391,7 +279,7 @@ function StyleSearch(props){
                         </div>
                 :
 
-                    <div style={{"width": 0.8*width, "margin": "auto", "height": 0.7*height}} show={!show_personalised_results}>
+                    <div style={{"width": 0.8*width, "margin": "auto", "height": 0.7*height}}>
                         {
                             <div>
                                 <Button 
@@ -427,7 +315,7 @@ function StyleSearch(props){
                                                             }
                                                         }} 
                                                         alt={index}
-                                                        src={item.src} 
+                                                        src={item["product_image_url"]} 
                                                         style={{"maxHeight": 0.3*height, 
                                                             "maxWidth": 0.8*width, 
                                                             "margin": "10px", 

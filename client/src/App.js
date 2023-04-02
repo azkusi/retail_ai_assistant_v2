@@ -2,17 +2,14 @@ import {React, useEffect, useState} from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import useWindowSize from './hooks/useWindow';
-import ItemSelection from './pages/ItemSelection';
 import { Route, Routes } from 'react-router-dom';
-import PreferenceSelection from './pages/PreferenceSelection';
-import PersonalisedResults from './pages/PersonalisedResults';
 import axios from 'axios';
 import { mens_t_shirts } from './data/mens_t_shirts';
 import { SearchClient as TypesenseSearchClient } from "typesense";
 import TextResults from './pages/TextResults';
-import ImageResults from './pages/ImageResults';
 
 import Home from './pages/Home';
+import ClusterInserts from './components/ClusterInserts';
 
 
 
@@ -33,73 +30,73 @@ function App() {
     'connectionTimeoutSeconds': 2
   })
 
-  useEffect(()=>{
+  // useEffect(()=>{
     
-    const url = mens_t_shirts[0].src
-    if(model_initialiser === 0){
-      try{
-        // axios.get(url, {
-        //   responseType: 'blob'
-        // }).then(async (response)=>{
-        //   if(response.status === 200){
-        //     console.log("image response: ", response)
-        //     // resolve(1)
-        //     // const blob_data = response.data
-            // const file = new File([response.data], "test.jpg")
-            // console.log("blob is", response.data)
-            // console.log("file is ", file)
+  //   const url = mens_t_shirts[0].src
+  //   if(model_initialiser === 0){
+  //     try{
+  //       axios.get(url, {
+  //         responseType: 'blob'
+  //       }).then(async (response)=>{
+  //         if(response.status === 200){
+  //           console.log("image response: ", response)
+  //           // resolve(1)
+  //           // const blob_data = response.data
+  //           const file = new File([response.data], "test.jpg")
+  //           console.log("blob is", response.data)
+  //           console.log("file is ", file)
     
-            // var formData = new FormData();
-            // formData.append("image", file);
-              var formData = {"text": "blue t-shirt", "collection": "mens_clothing"}
+  //           var formData = new FormData();
+  //           formData.append("image", file);
+  //             var formData = {"text": "blue t-shirt", "collection": "mens_clothing"}
     
-              axios.post('https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingText-HomePage', formData, {
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              }).then((result)=>{
-                const embedding = (result.data)
-                console.log("embedding is: ", JSON.stringify(embedding))
-                console.log("embedding0 is: ", JSON.stringify(embedding[0]))
+  //             axios.post('https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingText-HomePage', formData, {
+  //               headers: {
+  //                 'Content-Type': 'application/json'
+  //               }
+  //             }).then((result)=>{
+  //               const embedding = (result.data)
+  //               console.log("embedding is: ", JSON.stringify(embedding))
+  //               console.log("embedding0 is: ", JSON.stringify(embedding[0]))
                 
-              })
-              // .then(()=>{
-              axios.get(mens_t_shirts[0].src, {
-                responseType: "blob"
-              }).then((response)=>{
-                const file = new File([response.data], "test.jpg")
-                console.log("blob is", response.data)
-                console.log("file is ", file)
+  //             })
+  //             // .then(()=>{
+  //             axios.get(mens_t_shirts[0].src, {
+  //               responseType: "blob"
+  //             }).then((response)=>{
+  //               const file = new File([response.data], "test.jpg")
+  //               console.log("blob is", response.data)
+  //               console.log("file is ", file)
         
-                var imageformData = new FormData();
-                imageformData.append("image", file);
-                axios.post('https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingImage-HomePage', imageformData, {
-                  headers: {
-                    'Content-Type': 'multipart/form-data'
-                  }
-                }).then((result)=>{
-                  const embedding = (result.data)
-                  console.log("embedding is: ", JSON.stringify(embedding))
-                  console.log("embedding0 is: ", JSON.stringify(embedding[0]))
-                })
-              })
-        //   }
-        //   if(response.status === 404){
-        //     console.log("error image does not exist:")
-        //     return null
-        //   }
-        // })
+  //               var imageformData = new FormData();
+  //               imageformData.append("image", file);
+  //               axios.post('https://europe-west2-clip-embeddings.cloudfunctions.net/searchUsingImage-HomePage', imageformData, {
+  //                 headers: {
+  //                   'Content-Type': 'multipart/form-data'
+  //                 }
+  //               }).then((result)=>{
+  //                 const embedding = (result.data)
+  //                 console.log("embedding is: ", JSON.stringify(embedding))
+  //                 console.log("embedding0 is: ", JSON.stringify(embedding[0]))
+  //               })
+  //             })
+  //         }
+  //         if(response.status === 404){
+  //           console.log("error image does not exist:")
+  //           return null
+  //         }
+  //       })
         
-      }
-      catch(error){
-        console.log("second_error was:", error)
-        return null
-      }
+  //     }
+  //     catch(error){
+  //       console.log("second_error was:", error)
+  //       return null
+  //     }
       
-    }
+  //   }
     
     
-  }, [])
+  // }, [])
   
   return (
     <div style={{"width": width}} className="App">
@@ -109,9 +106,8 @@ function App() {
         <Route path="/" element={<Home />}/>
         <Route path="/text-search-results/:id" element={<TextResults/>}/>
         <Route path="/image-search-results/:id" element={<TextResults/>}/>
-        <Route path="/preference-selection/:id" element={<PreferenceSelection/>}/>
-        <Route path="/personalised-results/:id" element={<PersonalisedResults/>}/>
-        <Route path="/style-search" element={<ItemSelection/>}/>
+        <Route path="/cluster-inserts" element={<ClusterInserts/>}/>
+
       </Routes>
       
     </div>
