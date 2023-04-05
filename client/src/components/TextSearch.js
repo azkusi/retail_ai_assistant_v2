@@ -98,9 +98,15 @@ function TextSearch(props){
                         <input ref={inputRef} onSubmit={(e)=>{e.preventDefault()}} type="text" className="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2" />
                         <button 
                             onClick={()=>{
-                                //collection should be all clothing
-                                navigate('/text-search-results/'+inputRef.current.value)
-                                // sendUserRequest(inputRef.current.value)
+                                if(inputRef.current.value === ""){
+                                    window.alert("Please enter a search term")
+                                }
+                                else{
+                                    //collection should be all clothing
+                                    navigate('/text-search-results/'+inputRef.current.value)
+                                    // sendUserRequest(inputRef.current.value)
+                                }
+                               
                                 
                             }} 
                             className="btn btn-outline-secondary" type="button" id="button-addon2">

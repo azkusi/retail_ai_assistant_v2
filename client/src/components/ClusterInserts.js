@@ -149,7 +149,7 @@ async function getImageEmbedding(url){
               <Button
                 onClick={async ()=>{
                   // let i = 970
-                  let i = 11
+                  let i = 0
                   let plt_womens_clothing_insert = []
                   // let new_mens_trousers = []
                   // let legit_count = 0;
@@ -207,15 +207,15 @@ async function getImageEmbedding(url){
                     })
                     
                     // }
-                    // if(i === plt_womens_clothing[0].length - 1){
-                    //   console.log("plt_womens_clothing[0] embeddings: ", plt_womens_clothing_insert)
-                    //   client.collections('womens_clothing').documents().import(plt_womens_clothing_insert, {action: 'create'})
-                    //   .then((result)=>{
-                    //     console.log("FINAL INSERT DONE", result)
-                    //   }).then(()=>{
+                    if(i === plt_womens_clothing[0].products.length - 1){
+                      console.log("plt_womens_clothing[0] embeddings: ", plt_womens_clothing_insert)
+                      client.collections('womens_clothing').documents().import(plt_womens_clothing_insert, {action: 'create'})
+                      .then((result)=>{
+                        console.log("FINAL INSERT DONE", result)
+                      }).then(()=>{
 
-                    //   })
-                    // }
+                      })
+                    }
                   }
                   
                 }}

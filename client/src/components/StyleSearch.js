@@ -135,7 +135,9 @@ function StyleSearch(props){
                     .then((search_result)=>{
                         //search for similar products
                         if(search_result !== "SERVER_ERROR"){
-                            
+                            console.log("found", search_result.results[0].found)
+                            console.log("out_of", search_result.results[0].out_of)
+                            console.log("page", search_result.results[0].page)
                             set_show_personalised_results(true)
                             set_personalised_results(search_result.results[0].hits)
                             set_personalised_loading(false)
@@ -219,64 +221,64 @@ function StyleSearch(props){
                             </div>
                         </div>
                         :
-                        <div>
-                            <Button 
-                                style={{"margin": "5px", "position": "fixed", "top": "2%", "left": "2%"}} 
-                                onClick={()=>{props.backCallback("Text")}}
-                            >
-                                Back
-                            </Button>
-                            <br/>
-                            <br/>
-                        <Container style={{"width": 0.8*width, "margin": "auto"}}>
-                            <Row xl={4}lg={4} md={3} sm={3} xs={2}>
-                            {personalised_results.map((item, index)=>{
-                                return( 
-                                <Col key={index}>
-                                    <Link 
-                                        onClick={()=>{set_preview(true)
-                                            set_preview_item(item.document)
-                                        }} 
-                                        
-                                        to="#"
-                                        // to={item.document.retailer_url}
-                                    >
-                                        <img alt={index} src={item.document["product_image_url"]} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
-                                        <label>{item.document["description"]}</label>
-                                        <label>£{item.document["price"]}</label>
-                                    </Link>
-                                    
+                            <div>
+                                <Button 
+                                    style={{"margin": "5px", "position": "fixed", "top": "2%", "left": "2%"}} 
+                                    onClick={()=>{props.backCallback("Text")}}
+                                >
+                                    Back
+                                </Button>
+                                <br/>
+                                <br/>
+                                <Container style={{"width": 0.8*width, "margin": "auto"}}>
+                                    <Row xl={4}lg={4} md={3} sm={3} xs={2}>
+                                    {personalised_results.map((item, index)=>{
+                                        return( 
+                                        <Col key={index}>
+                                            <Link 
+                                                onClick={()=>{set_preview(true)
+                                                    set_preview_item(item.document)
+                                                }} 
+                                                
+                                                to="#"
+                                                // to={item.document.retailer_url}
+                                            >
+                                                <img alt={index} src={item.document["product_image_url"]} style={{"maxHeight": 0.3*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
+                                                <label>{item.document["description"]}</label>
+                                                <label>£{item.document["price"]}</label>
+                                            </Link>
+                                            
 
-                                </Col>
-                                )
-                            })}
-                            </Row>
+                                        </Col>
+                                        )
+                                    })}
+                                    </Row>
 
-                            {preview && <Modal show onHide={()=>{set_preview(false)}}>
-                                <Modal.Header closeButton/>
-                                <Modal.Body style={{textAlign: "center"}}>
-                                    <img alt={preview_item["description"]} src={preview_item["product_image_url"]} style={{"maxHeight": 0.5*height, "maxWidth": 0.5*width, "padding": "10px"}}/>
-                                    <br/>
-                                    <h5>{preview_item["description"]}</h5>
-                                    <label>£{preview_item["price"]}</label>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    {/* <Button variant="secondary" onClick={handleClose}>
-                                        Add to Saved
-                                    </Button> */}
-                                    <Button variant="primary" 
-                                        onClick={()=>{
-                                            // set_preview(false)
-                                            window.open(preview_item["product_url"], "_blank")
-                                        }}>
-                                        View on Retailer's Site
-                                        {/* View on {item.document.retailer_name} */}
-                                    </Button>
-                                </Modal.Footer>
-                            </Modal>}
-                            
-                        </Container>
-                        </div>
+                                    {preview && <Modal show onHide={()=>{set_preview(false)}}>
+                                        <Modal.Header closeButton/>
+                                        <Modal.Body style={{textAlign: "center"}}>
+                                            <img alt={preview_item["description"]} src={preview_item["product_image_url"]} style={{"maxHeight": 0.5*height, "maxWidth": 0.5*width, "padding": "10px"}}/>
+                                            <br/>
+                                            <h5>{preview_item["description"]}</h5>
+                                            <label>£{preview_item["price"]}</label>
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            {/* <Button variant="secondary" onClick={handleClose}>
+                                                Add to Saved
+                                            </Button> */}
+                                            <Button variant="primary" 
+                                                onClick={()=>{
+                                                    // set_preview(false)
+                                                    window.open(preview_item["product_url"], "_blank")
+                                                }}>
+                                                View on Retailer's Site
+                                                {/* View on {item.document.retailer_name} */}
+                                            </Button>
+                                        </Modal.Footer>
+                                    </Modal>}
+                                
+                                </Container>
+                            </div>
                 :
 
                     <div style={{"width": 0.8*width, "margin": "auto", "height": 0.7*height}}>

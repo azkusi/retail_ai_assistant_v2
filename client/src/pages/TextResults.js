@@ -58,8 +58,13 @@ function TextResults() {
   }
 
   useEffect(()=>{
+    if(!id){
+      navigate("/")
+    }else{
+      sendUserRequest(id)
+    }
         
-    sendUserRequest(id)
+    
     
 
 },[])

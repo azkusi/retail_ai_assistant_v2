@@ -10,6 +10,7 @@ import TextResults from './pages/TextResults';
 
 import Home from './pages/Home';
 import ClusterInserts from './components/ClusterInserts';
+import RecommendationResults from './components/RecommendationResults';
 
 
 
@@ -107,6 +108,7 @@ function App() {
         <Route path="/text-search-results/:id" element={<TextResults/>}/>
         <Route path="/image-search-results/:id" element={<TextResults/>}/>
         <Route path="/cluster-inserts" element={<ClusterInserts/>}/>
+        <Route path="/recommendation-results" element={<RecommendationResults/>} />
 
       </Routes>
       
