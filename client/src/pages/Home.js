@@ -16,7 +16,7 @@ function Home() {
     const [selectedButton, setSelectedButton] = useState("Search");
     const [show_home_items, set_show_home_items] = useState(true)
     const user = null
-    const [styleinstrcuions, set_styleinstructions] = useState(false)
+    const [styleinstructions, set_styleinstructions] = useState(false)
     
     const navigate = useNavigate()
     
@@ -71,6 +71,8 @@ function Home() {
             <div style={{marginBottom: "10px", display: "flex", alignItems: "flex-start", justifyContent: "flex-start"}}>
                 <h4 style={{textAlign: "center"}}>Engine Mode:</h4>
             </div>
+
+            
             <div style={{display: "flex", alignItems: "flex-start", justifyContent: "flex-start"}}>
                                     
                 <div style={{display: "flex", justifyContent: "center"}}>
@@ -78,6 +80,8 @@ function Home() {
                         onClick={()=>{
                             // handleButtonClick("Text")
                             setMode("Search")
+                            set_show_home_items(true)
+                            set_styleinstructions(false)
                         }}
                     >
                         Search
@@ -95,6 +99,7 @@ function Home() {
                             }
                             else{
                                 setMode("Recommend")
+                                
                             }
                         }}
                     >
@@ -102,6 +107,22 @@ function Home() {
                     </button>
                 </div>
             </div>
+
+            {(mode === "Recommend") && 
+                                <div>
+                                    <br/>
+                                    <br/>
+                                    {styleinstructions && <h4>Scroll & choose two styles</h4>}
+                                    
+                                    <Recommender 
+                                        showHomeCallback={removeHomeItems} 
+                                        backCallback={handleButtonClick} 
+                                        selectStylesInstructionCallback={selectStylesInstruction} 
+                                        unselectStylesInstructionCallback={removeSelectStylesInstruction}
+                                    />
+                                    
+                                </div>
+                            }
         </div>
         {(mode !== "Style") && 
             <div style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", height: "100vh", marginTop: "10vh"}}>
@@ -117,21 +138,7 @@ function Home() {
                         <div className="col-md-6">
                             {(mode === "Search") && <TextSearch showHomeCallback={removeHomeItems} backCallback={handleButtonClick}/>}
                             {/* If user is logged in take them to logged in recommender page instead of showing them recommender */}
-                            {(mode === "Recommend") && 
-                                <div>
-                                    <br/>
-                                    <br/>
-                                    {styleinstrcuions && <h4>Scroll & choose two styles</h4>}
-                                    
-                                    <Recommender 
-                                        showHomeCallback={removeHomeItems} 
-                                        backCallback={handleButtonClick} 
-                                        selectStylesInstructionCallback={selectStylesInstruction} 
-                                        unselectStylesInstructionCallback={removeSelectStylesInstruction}
-                                    />
-                                    
-                                </div>
-                            }
+                            
 
                             {/* {(mode === "Image") && <ImageSearch showHomeCallback={removeHomeItems} backCallback={handleButtonClick}/>} */}
                             
@@ -158,7 +165,11 @@ function Home() {
                 </div>
 
             </div>
+
+            
         }
+
+        
 
         
         {(mode === "Style") && 

@@ -21,6 +21,7 @@ function Recommender(props){
 
     useEffect(()=>{
         console.log("location state is: ", location.state)
+        window.scrollTo(0, 100);
     },[])
 
     function retrieveRecommendations(){
@@ -73,7 +74,13 @@ function Recommender(props){
                     </div>
                 }
                 {!gender_categories && 
-                    <div>
+                    <div style={{
+                        position: "absolute",
+                        top: "60%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        
+                    }}>
                     <Dropdown>
                         <Dropdown.Toggle variant="success" id="dropdown-basic">
                             Select clothing gender
@@ -85,6 +92,7 @@ function Recommender(props){
                                     set_gender_categories(womens_style_categories)
                                     set_gender("Women")
                                     props.selectStylesInstructionCallback()
+                                    props.showHomeCallback()
                                 }}
                             >
                                 Women's Clothing
@@ -108,7 +116,13 @@ function Recommender(props){
                 } 
                 {
                     gender_categories && 
-                        <div style={{display: "flex", justifyContent: "center"}}>
+                        <div style={{
+                            display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: "30px"
+
+                          }}>
                             <br/>
                             <Container style={{"width": 0.85*width, "margin": "auto", "height": 0.7*height, "overflowY": "scroll", border: "solid", borderWidth: "2px"}}>
                                 <Row xl={4}lg={4} md={3} sm={3} xs={2}>
