@@ -110,7 +110,7 @@ function Recommender(props){
                     gender_categories && 
                         <div style={{display: "flex", justifyContent: "center"}}>
                             <br/>
-                            <Container style={{"width": 0.85*width, "margin": "auto", "height": 0.7*height, "overflowY": "scroll"}}>
+                            <Container style={{"width": 0.85*width, "margin": "auto", "height": 0.7*height, "overflowY": "scroll", border: "solid", borderWidth: "2px"}}>
                                 <Row xl={4}lg={4} md={3} sm={3} xs={2}>
                                 {gender_categories.map((item, index)=>{
                                     return( 

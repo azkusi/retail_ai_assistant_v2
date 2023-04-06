@@ -1,38 +1,38 @@
 export const womens_style_categories = [
     {
         "category": "casual",
-        "image_url": "https://cdn-img.prettylittlething.com/2/7/c/2/27c232c6395099724affda7aca6fd60048deba4b_CMT0056_1.jpg?imwidth=400"
+        "image_url": "https://cdn-img.prettylittlething.com/0/a/3/5/0a35b76d664b68b0d328c8f4f475c9bbfcfb8329_CML4311_1.jpg"
     },
     {
         "category": "formal",
-        "image_url": "https://cdn-img.prettylittlething.com/3/e/e/4/3ee4871fcc479f3e55743a7b1fba40bd9435e467_cms6554_4.jpg?imwidth=400"
+        "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_wUWBATF1S_fF_UWhTOGzU5-yjaKWC_VlAwJ7HsQdBrCjqahuja2zSYl5KIgdbf0OnsQ&usqp=CAU"
     },
     {
         "category": "party",
-        "image_url": "https://cdn-img.prettylittlething.com/8/5/a/9/85a9c8c9f686a2a98ef640c8dae4316d70f39afe_clx8081_1.jpg?imwidth=400"
+        "image_url": "https://media.nelly.com/i/nlyscandinavia/710977-1173_04?fmt=webp&qlt=default&w=469&h=625&sm=c"
     },
     {
         "category": "work",
-        "image_url": "https://cdn-img.prettylittlething.com/4/b/d/b/4bdb010c54f4e8bd500e77b716db4c8863e2b8e2_cmf7477_1.jpg?imwidth=400"
+        "image_url": "https://asset1.cxnmarksandspencer.com/is/image/mands/SD_01_T59_0065_Y0_X_EC_0"
     },
     {
         "category": "smart casual",
-        "image_url": "https://cdn-img.prettylittlething.com/e/1/f/1/e1f137818f5f39012d7a22211a2fd1c2787aaed2_cnb3004_1.jpg?imwidth=400"
+        "image_url": "https://www.maridfashion.com/wp-content/uploads/2020/06/f39fd5abc908cf8e41d12b183e60d87a.jpg.webp"
     },
     {
         "category": "loungewear",
-        "image_url": "https://cdn-img.prettylittlething.com/4/b/d/b/4bdb010c54f4e8bd500e77b716db4c8863e2b8e2_cmf7477_1.jpg?imwidth=400"
+        "image_url": "https://media.boohoo.com/i/boohoo/pzz04685_stone_xl?w=900&qlt=default&fmt.jp2.qlt=70&fmt=auto&sm=fit"
     },
     {
         "category": "athleisure",
-        "image_url": "https://cdn-img.prettylittlething.com/4/1/e/f/41ef6f05f9f52f271a13dde154679cd933e902bd_cnb5523_1.jpg?imwidth=400"
+        "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiH54KB4GLI52LGdoyR0eWNarKadVJQu4efaIU7yOIchYs7-9DPfRzbR6DGWnmXh_pWa0&usqp=CAU"
     },
     {
         "category": "gym/sportswear",
-        "image_url": "https://cdn-img.prettylittlething.com/0/a/7/9/0a79c47f311456dbdffcc4c94f9f89645fc5d356_CMB4743_1.jpg?imwidth=400"
+        "image_url": "https://cdn.shopify.com/s/files/1/0247/9797/0513/products/BT0610_BT0591_2_Silver-sports-bra-leggings_026e26ac-0714-4fcb-862f-b762f6113d15_2048x2048.jpg?v=1664451288"
     },
     {
         "category": "streetwear",
-        "image_url": "https://cdn-img.prettylittlething.com/d/0/f/6/d0f693e7ec31a77c3cc4efd3a477986ec79378c4_cmp3112_1.jpg?imwidth=400"
+        "image_url": "https://cdn-img.prettylittlething.com/5/2/9/8/5298edd286cee5de511695f9c506bcd543440270_cmy1694_3.jpg?imwidth=400"
     }
 ]
