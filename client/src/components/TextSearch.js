@@ -95,7 +95,23 @@ function TextSearch(props){
         //             :
     
                     <div className="input-group mb-3">
-                        <input ref={inputRef} onSubmit={(e)=>{e.preventDefault()}} type="text" className="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2" />
+                        <input ref={inputRef} 
+                            onKeyDown={
+                                (e)=>{
+                                    if(e.key === "Enter"){
+                                        e.preventDefault()
+                                        if(inputRef.current.value === ""){
+                                            window.alert("Please enter a search term")
+                                        }
+                                        else{
+                                            //collection should be all clothing
+                                            navigate('/text-search-results/'+inputRef.current.value)
+                                            // sendUserRequest(inputRef.current.value)
+                                        }
+                                    }
+                                    
+                                }} 
+                            type="text" className="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2" />
                         <button 
                             onClick={()=>{
                                 if(inputRef.current.value === ""){

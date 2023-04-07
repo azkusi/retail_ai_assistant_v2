@@ -5,27 +5,27 @@ export const womens_style_categories = [
     },
     {
         "category": "formal",
-        "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_wUWBATF1S_fF_UWhTOGzU5-yjaKWC_VlAwJ7HsQdBrCjqahuja2zSYl5KIgdbf0OnsQ&usqp=CAU"
+        "image_url": "https://romans-cdn.rlab.net/images/extralarge/ae6a4f9b-e09b-4748-869b-b5105f029cb6.jpg"
     },
     {
         "category": "party",
-        "image_url": "https://media.nelly.com/i/nlyscandinavia/710977-1173_04?fmt=webp&qlt=default&w=469&h=625&sm=c"
+        "image_url": "https://cdn-img.prettylittlething.com/3/b/2/1/3b21ba87d2fe0aa5e550cdb72a4ca9403f95b601_cmt9185_1.jpg?imwidth=400"
     },
     {
         "category": "work",
-        "image_url": "https://asset1.cxnmarksandspencer.com/is/image/mands/SD_01_T59_0065_Y0_X_EC_0"
+        "image_url": "https://romans-cdn.rlab.net/images/original/d12774e8-3394-4332-a516-b169ebe2cbd9.jpg"
     },
     {
         "category": "smart casual",
-        "image_url": "https://www.maridfashion.com/wp-content/uploads/2020/06/f39fd5abc908cf8e41d12b183e60d87a.jpg.webp"
+        "image_url": "https://romans-cdn.rlab.net/images/original/b129dcda-3e7f-4512-b93e-a3003b895127.jpg"
     },
     {
         "category": "loungewear",
-        "image_url": "https://media.boohoo.com/i/boohoo/pzz04685_stone_xl?w=900&qlt=default&fmt.jp2.qlt=70&fmt=auto&sm=fit"
+        "image_url": "https://romans-cdn.rlab.net/images/original/13d7f36c-66b1-4c7c-a261-672715d9f533.jpg"
     },
     {
         "category": "athleisure",
-        "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiH54KB4GLI52LGdoyR0eWNarKadVJQu4efaIU7yOIchYs7-9DPfRzbR6DGWnmXh_pWa0&usqp=CAU"
+        "image_url": "https://romans-cdn.rlab.net/images/original/5f814ff7-1c20-4a45-a63c-b83b317a75a0.jpg"
     },
     {
         "category": "gym/sportswear",

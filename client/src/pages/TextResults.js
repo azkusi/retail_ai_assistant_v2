@@ -139,9 +139,9 @@ function sendUserRequest(data){
       
           <br/>
             <div style={{"width": "100%", "margin": "auto"}}>
-              <Typography variant="h1" component="h1">
-                <h1>Your Search Results</h1>
-              </Typography>
+              {/* <Typography variant="h1" component="h1"> */}
+                <h2>Your Search Results</h2>
+              {/* </Typography> */}
 
               {search_results ?
               <div>
