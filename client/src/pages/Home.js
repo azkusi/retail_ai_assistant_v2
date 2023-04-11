@@ -12,8 +12,8 @@ import Recommender from '../components/Recommender';
 
 function Home() {
 
-    const [mode, setMode] = useState("Search")
-    const [selectedButton, setSelectedButton] = useState("Search");
+    const [mode, setMode] = useState("Recommend")
+    const [selectedButton, setSelectedButton] = useState("Recommend");
     const [show_home_items, set_show_home_items] = useState(true)
     const user = null
     const [styleinstructions, set_styleinstructions] = useState(false)
