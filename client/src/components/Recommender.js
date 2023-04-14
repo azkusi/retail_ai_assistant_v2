@@ -28,7 +28,8 @@ function Recommender(props){
         if(retailer === "numbersixlondon"){
             set_gender_categories(mens_style_categories)
             props.showHomeCallback()
-            window.scrollTo(0, 100);
+            props.selectStylesInstructionCallback()
+            // window.scrollTo(0, 100);
         }
         
     },[])
