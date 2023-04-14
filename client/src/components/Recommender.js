@@ -16,11 +16,18 @@ function Recommender(props){
     const [selected_categories, set_selected_categories] = useState([])
     const [loading, set_loading] = useState(false)
     const location = useLocation();
+    const [done_hovered, set_done_hovered] = useState(false)
     
     const navigate = useNavigate()
 
     useEffect(()=>{
-        console.log("location state is: ", location.state)
+        //if url is numbersixlondon, then set gender categories to mens categories
+        //else set to womens categories
+        let hostname = window.location.hostname
+        let retailer = hostname.split('.')[0]
+        if(retailer === "numbersixlondon"){
+            set_gender_categories(mens_style_categories)
+        }
         window.scrollTo(0, 100);
     },[])
 
@@ -31,7 +38,7 @@ function Recommender(props){
             clothing_gender = "womens_clothing"
         }
         else{
-            clothing_gender = "mens_clothing"
+            clothing_gender = "number_six_london"
         }
         try{
             axios.post("https://us-central1-retail-assistant-demo.cloudfunctions.net/getRecommendationsUsingTextFromColdStartNotLoggedIn", {
@@ -82,7 +89,7 @@ function Recommender(props){
                         
                     }}>
                     <Dropdown>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        <Dropdown.Toggle style={{backgroundColor: "#1a3c6c", borderColor: "#1a3c6c"}} id="dropdown-basic">
                             Select clothing gender
                         </Dropdown.Toggle>
 
@@ -97,11 +104,12 @@ function Recommender(props){
                             >
                                 Women's Clothing
                             </Dropdown.Item>
-                            <Dropdown.Item disabled
+                            <Dropdown.Item
                                 onClick={()=>{
                                     set_gender_categories(mens_style_categories)
                                     set_gender("Men")
                                     props.selectStylesInstructionCallback()
+                                    props.showHomeCallback()
                                 }}
                             >
                                 Men's Clothing
@@ -118,13 +126,16 @@ function Recommender(props){
                     gender_categories && 
                         <div style={{
                             display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  marginTop: "30px"
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: "30px"
 
                           }}>
                             <br/>
-                            <Container style={{"width": 0.85*width, "margin": "auto", "height": 0.7*height, "overflowY": "scroll", border: "solid", borderWidth: "2px"}}>
+                            <Container style={{
+                                "width": 0.85*width, "margin": "auto", "height": 0.7*height, "overflowY": "scroll",
+                                    boxShadow: "inset 0 0 0 1px rgba(0, 0, 0, 0.1)", 
+                                    padding: "5px"}}>
                                 <Row xl={4}lg={4} md={3} sm={3} xs={2}>
                                 {gender_categories.map((item, index)=>{
                                     return( 
@@ -162,8 +173,17 @@ function Recommender(props){
                                 
                             </Container>
                             {(selected_categories.length > 0) && 
-                                <Button
-                                    style={{"position": "fixed", "bottom": 0, "right": 0, "zIndex": 100}}
+                                <button
+                                style={{"position": "fixed", "bottom": 0, "right": 0, "zIndex": 100,
+                                    border: 'none',
+                                    backgroundColor: done_hovered ? 'white' : '#1a3c6c',
+                                    color: done_hovered ? '#1a3c6c' : 'white',
+                                    padding: '10px 20px',
+                                    borderRadius: '0',
+                                    cursor: 'pointer',
+                                }}
+                                onMouseEnter={() => set_done_hovered(true)}
+                                onMouseLeave={() => set_done_hovered(false)}
                                     onClick={()=>{
                                         //send available products for picking
                                         //and selected products to backend and retrieve results 
@@ -184,7 +204,7 @@ function Recommender(props){
                                     }}
                                 >
                                     Done
-                                </Button>
+                                </button>
                             }
                         </div>
                 }

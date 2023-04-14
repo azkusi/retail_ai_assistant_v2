@@ -213,6 +213,10 @@ exports.getRecommendationsUsingTextFromColdStartNotLoggedIn = functions.runWith(
             console.log("results i is:", JSON.stringify(results[i]))
             console.log("results i results is:", JSON.stringify(results[i].recommendations.results))
 
+            console.log("number of categories: ", results.length.toString())
+            console.log("number of hits: ", results[0].recommendations.results[0].hits.length.toString())
+            console.log("number of found: ", results[0].recommendations.results[0].found.toString())
+
             let promises1 = []
 
             for(i; i < results.length; i++){
@@ -248,7 +252,7 @@ exports.getRecommendationsUsingTextFromColdStartNotLoggedIn = functions.runWith(
                 admin.firestore().collection("already_seen_recommendations")
                 .add({"already_seen": already_seen_recommendations}).then((docRef)=>{
                     already_seen_doc_id = docRef.id
-                    console.log("docRef: ", docRef)
+                    // console.log("docRef: ", docRef)
                 }).catch((err)=>{
                     console.log("error: ", err)
 
@@ -349,6 +353,8 @@ exports.getRecommendationsUsingImageWarmStartNotLoggedIn = functions.runWith({ m
                 if(doc.exists){
                     already_seen_recommendations =  doc.data()["already_seen"]
                     console.log("type: ", typeof(already_seen_recommendations))
+                    console.log("already_seen: ", doc.data()["already_seen"])
+
                 }
                 else{
                     already_seen_recommendations = []
@@ -356,7 +362,7 @@ exports.getRecommendationsUsingImageWarmStartNotLoggedIn = functions.runWith({ m
             }).then(()=>{
                 // console.log("already_seen_recommendations: ", already_seen_recommendations, "type: ", typeof(already_seen_recommendations))
                 // console.log("recommendations: ", results[0].recommendations.results[0].hits)
-                console.log("number of results: ", results.length.toString())
+                console.log("number of categories: ", results.length.toString())
                 console.log("number of hits: ", results[0].recommendations.results[0].hits.length.toString())
                 console.log("number of found: ", results[0].recommendations.results[0].found.toString())
 
@@ -381,6 +387,9 @@ exports.getRecommendationsUsingImageWarmStartNotLoggedIn = functions.runWith({ m
                             break
                         }
                         else{
+                            console.log("pushing: ", results[i].recommendations.results[0].hits[j].document.description)
+                            console.log("object being considered for push: ", results[i].recommendations.results[0].hits[j].document)
+
                             recommendations_to_send.push({ "recommendation" : results[i].recommendations.results[0].hits[j], "category": results[i].category})
                             recommendation_descriptions_to_send.push(results[i].recommendations.results[0].hits[j].document.description)
                             already_seen_recommendations.push(results[i].recommendations.results[0].hits[j].document.description)
@@ -391,6 +400,7 @@ exports.getRecommendationsUsingImageWarmStartNotLoggedIn = functions.runWith({ m
                     }
                     promises1.push(Promise.all(promises2))
                 }
+                console.log("already_seen: ", already_seen_recommendations)
 
                 Promise.all(promises1).then(() => {
 

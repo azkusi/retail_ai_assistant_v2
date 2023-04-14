@@ -15,7 +15,9 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage"
 
-import { plt_womens_clothing } from '../data/PLT_1_240';
+// import { plt_womens_clothing } from '../data/PLT_1_240';
+import { number_six_products } from '../data/number_six_products';
+
 const Typesense = require('typesense')
 
 
@@ -149,19 +151,19 @@ async function getImageEmbedding(url){
               <Button
                 onClick={async ()=>{
                   // let i = 970
-                  let i = 0
-                  let plt_womens_clothing_insert = []
+                  let i = 520
+                  let number_six_products_insert = []
                   // let new_mens_trousers = []
                   // let legit_count = 0;
-                  console.log("plt_womens_clothing length", plt_womens_clothing[0].products.length.toString())
-                  for(i; i < plt_womens_clothing[0].products.length; i++){
-                    console.log("i is : ", i , "plt_womens_clothing length is: ", plt_womens_clothing[0].products.length.toString())
-                    await getImageEmbedding(plt_womens_clothing[0].products[i]["product_image_url"])
+                  console.log("number_six_products length", number_six_products.length.toString())
+                  for(i; i < number_six_products.length; i++){
+                    console.log("i is : ", i , "number_six_products length is: ", number_six_products.length.toString())
+                    await getImageEmbedding(number_six_products[i]["image_link"])
                     .then(async (embedding)=>{
                         if((embedding !== 0) ){
                             console.log("embedding for retailer image is: ", embedding)
                             let retailer;
-                            let url = plt_womens_clothing[0].products[i]["product_url"]
+                            let url = number_six_products[i]["link"]
 
                             if(url.split("/")[2].split('.').includes("www")){
                                 console.log("yes")
@@ -170,23 +172,23 @@ async function getImageEmbedding(url){
                             else{
                                 retailer = (url.split("/")[2].split('.')[0])
                             }
-                            console.log("parseInt: ", parseInt(plt_womens_clothing[0].products[i]["price"].replace("£", "")),)
-                            plt_womens_clothing_insert.push({
+                            console.log( "parseInt: ", parseInt(number_six_products[i]["price"].replace("£", "").replace(" ", "").replace("GBP", "")) )
+                            number_six_products_insert.push({
                                 // "ID": i,
                                 "vec": embedding,
-                                "description": plt_womens_clothing[0].products[i]["description"],
-                                "price": parseInt(plt_womens_clothing[0].products[i]["price"].replace("£", "")),
-                                "product_url": plt_womens_clothing[0].products[i]["product_url"],
-                                "product_image_url": plt_womens_clothing[0].products[i]["product_image_url"],
+                                "description": number_six_products[i]["title"],
+                                "price": parseInt(number_six_products[i]["price"].replace("£", "").replace(" ", "").replace("GBP", "")),
+                                "product_url": number_six_products[i]["link"],
+                                "product_image_url": number_six_products[i]["image_link"],
                                 "retailer": retailer,
                             })
 
                             if(((i+1) % 10 === 0) && (i !== 0)){
-                                console.log("womens_clothing_insert embeddings array: ", plt_womens_clothing_insert)
+                                console.log("number_six_products embeddings array: ", number_six_products_insert)
 
                                 try{
                                 console.log("i is ", i)
-                                await client.collections('womens_clothing').documents().import(plt_womens_clothing_insert, {action: 'create'})
+                                await client.collections('number_six_london').documents().import(number_six_products_insert, {action: 'create'})
                                 .then((result)=>{
                                     console.log("INSERT DONE", (i / 100).toString(), result)
                                 }, (error)=>{
@@ -197,7 +199,7 @@ async function getImageEmbedding(url){
                                 console.log("error was: ", err)
                                 }
                                 
-                                plt_womens_clothing_insert = []
+                                number_six_products_insert = []
                             }
                             }
                             else{
@@ -207,9 +209,9 @@ async function getImageEmbedding(url){
                     })
                     
                     // }
-                    if(i === plt_womens_clothing[0].products.length - 1){
-                      console.log("plt_womens_clothing[0] embeddings: ", plt_womens_clothing_insert)
-                      client.collections('womens_clothing').documents().import(plt_womens_clothing_insert, {action: 'create'})
+                    if(i === number_six_products.length - 1){
+                      console.log("number_six_products_insert embeddings: ", number_six_products_insert)
+                      client.collections('number_six_london').documents().import(number_six_products_insert, {action: 'create'})
                       .then((result)=>{
                         console.log("FINAL INSERT DONE", result)
                       }).then(()=>{
@@ -220,7 +222,7 @@ async function getImageEmbedding(url){
                   
                 }}
               >
-                Insert Womens Clothing Embeddings
+                Insert Number Six Clothing Embeddings
               </Button>
 
               
