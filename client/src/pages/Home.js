@@ -88,7 +88,12 @@ function Home() {
             <Modal.Body>
                 <p>This is a demo of how TailorAI works.</p>
                 <br/>
-                <p>To see a live example visit https://numbersixlondon.tailorai.co.uk to see how numbersixlondon is using TailorAI to increase customer sales</p>
+                <p>
+                    To see a live example visit https://numbersixlondon.com click on the AI assistant icon on the bottom right corner of their website to see how numbersixlondon is using TailorAI to increase customer sales.
+                </p>
+                <p>
+                    Alternatively, click the button below and we'll take you straight to the platform we created for them.
+                </p>
             </Modal.Body>
             <Modal.Footer>
                 <button className="btn btn-primary" onClick={()=>{set_numbersix_demo_modal(false)}}
