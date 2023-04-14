@@ -160,7 +160,7 @@ function Home() {
                     </p>
                     : 
                     <p style={{textAlign: "center", marginBottom: "40px", color: 'grey', fontSize: "13.5px"}}>
-                        AI Search & Recommendations powered by <span style={{fontWeight: "bold"}}>TailorAI</span>
+                        AI Search & Recommendations powered by <span style={{fontWeight: "bold"}}> <a href='https://tailorai.co.uk'>TailorAI</a></span>
                     </p>
                     :
                 <></>
