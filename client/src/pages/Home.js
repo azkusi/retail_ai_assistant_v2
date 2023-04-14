@@ -144,7 +144,7 @@ function Home() {
                     
                     :
                         <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                            <h1 style={{fontWeight: "bold", letterSpacing: number_six_style[0].letterSpacing}}>number six</h1>
+                            <h1 style={{fontWeight: "bold", letterSpacing: "-0.07em"}}>number six</h1>
                         </div>
                     :
                 <></>
@@ -156,7 +156,7 @@ function Home() {
                         Retail Search and Recommendation Engine
                     </p>
                     : 
-                    <p style={{textAlign: "center", marginBottom: "40px", fontWeight: "bold", color: 'grey', fontSize: "13.5px"}}>
+                    <p style={{textAlign: "center", marginBottom: "40px", color: 'grey', fontSize: "13.5px"}}>
                         AI Search & Recommendations powered by <span style={{fontWeight: "bold"}}>TailorAI</span>
                     </p>
                     :
