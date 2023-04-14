@@ -81,19 +81,21 @@ function Home() {
     <div style={{backgroundColor: hostname === "numbersixlondon" ? number_six_style[0].backgroundColor : "white"}}>
         {/* <h4>Sign Up</h4>
         <h4>Login</h4> */}
-        <Modal show onHide={()=>{set_numbersix_demo_modal(false)}}>
+        {number_six_demo_modal && <Modal show onHide={()=>{set_numbersix_demo_modal(false)}}>
             <Modal.Header closeButton>
-                <Modal.Title>Number Six Demo</Modal.Title>
+                <Modal.Title>Demo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p>This is a demo of how TailorAI works. To see a live example visit numbersixlondon.tailorai.co.uk to see how numbersixlondon is using TailorAI to increase customer sales</p>
+                <p>This is a demo of how TailorAI works.</p>
+                <br/>
+                <p>To see a live example visit https://numbersixlondon.tailorai.co.uk to see how numbersixlondon is using TailorAI to increase customer sales</p>
             </Modal.Body>
             <Modal.Footer>
                 <button className="btn btn-primary" onClick={()=>{set_numbersix_demo_modal(false)}}
                     style={{
                         border: 'none',
-                        backgroundColor: view_numsix_hovered ? 'white' : '#1a3c6c',
-                        color: view_numsix_hovered ? '#1a3c6c' : 'white',
+                        backgroundColor: view_numsix_hovered ? '#1a3c6c' : 'white',
+                        color: view_numsix_hovered ? 'white' : '#1a3c6c',
                         padding: '10px 20px',
                         borderRadius: '0',
                         cursor: 'pointer',
@@ -106,8 +108,8 @@ function Home() {
                 <button className="btn btn-primary" onClick={()=>{window.location.href = "https://numbersixlondon.tailorai.co.uk"}}
                     style={{
                         border: 'none',
-                        backgroundColor: close_numsix_hovered ? '#1a3c6c' : 'white',
-                        color: close_numsix_hovered ? 'white' : '#1a3c6c',
+                        backgroundColor: close_numsix_hovered ? 'white' : '#1a3c6c',
+                        color: close_numsix_hovered ? '#1a3c6c' : 'white',
                         padding: '10px 20px',
                         borderRadius: '0',
                         cursor: 'pointer',
@@ -118,7 +120,7 @@ function Home() {
                     Visit Number Six London
                 </button>
             </Modal.Footer>
-        </Modal>
+        </Modal>}
         <div style={{marginLeft: "20px", marginTop: "10px"}}>
 
             <div style={{marginBottom: "10px", display: "flex", alignItems: "flex-start", justifyContent: "flex-start"}}>
