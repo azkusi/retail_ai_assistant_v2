@@ -72,7 +72,7 @@ function Home() {
 
 
   return(
-    <div>
+    <div style={{backgroundColor: hostname === "numbersixlondon" ? number_six_style[0].backgroundColor : "white"}}>
         {/* <h4>Sign Up</h4>
         <h4>Login</h4> */}
         <div style={{marginLeft: "20px", marginTop: "10px"}}>
@@ -144,8 +144,11 @@ function Home() {
                     
                     :
                         <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                            <h1 style={{fontWeight: "bold", letterSpacing: "-0.07em"}}>number six</h1>
+                            <h1 style={{fontWeight: "bold", letterSpacing: number_six_style[0].letterSpacing, color: number_six_style[0].color, fontFamily: number_six_style[0].fontFamily}}>number six</h1>
                         </div>
+                         
+                        
+                        
                     :
                 <></>
                 }
