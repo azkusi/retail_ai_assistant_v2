@@ -66,7 +66,7 @@ function ClusterInserts(props) {
                   'protocol': 'https'   // For Typesense Cloud use https
                 }],
                 'apiKey': 'qVEACzIepH6miYVADVgngiTOZOjxjKiR',
-                'connectionTimeoutSeconds': 10
+                'connectionTimeoutSeconds': 180
               })
 
   useEffect(()=>{
@@ -151,7 +151,8 @@ async function getImageEmbedding(url){
               <Button
                 onClick={async ()=>{
                   // let i = 970
-                  let i = 520
+                  let i = 1350
+                  let already_submitted = []
                   let number_six_products_insert = []
                   // let new_mens_trousers = []
                   // let legit_count = 0;
@@ -173,7 +174,10 @@ async function getImageEmbedding(url){
                                 retailer = (url.split("/")[2].split('.')[0])
                             }
                             console.log( "parseInt: ", parseInt(number_six_products[i]["price"].replace("£", "").replace(" ", "").replace("GBP", "")) )
-                            number_six_products_insert.push({
+                            if(!already_submitted.includes(number_six_products[i]["title"])){
+                                already_submitted.push(number_six_products[i]["title"])
+                                console.log("Pushing")
+                                number_six_products_insert.push({
                                 // "ID": i,
                                 "vec": embedding,
                                 "description": number_six_products[i]["title"],
@@ -181,42 +185,68 @@ async function getImageEmbedding(url){
                                 "product_url": number_six_products[i]["link"],
                                 "product_image_url": number_six_products[i]["image_link"],
                                 "retailer": retailer,
-                            })
+                              })
+                            }
+                            else{
+                              console.log("Already included")
+                            }
 
-                            if(((i+1) % 10 === 0) && (i !== 0)){
+                            // if(((i+1) % 10 === 0) && (i !== 0)){
+                            if(number_six_products_insert.length === 10){
                                 console.log("number_six_products embeddings array: ", number_six_products_insert)
 
                                 try{
-                                console.log("i is ", i)
-                                await client.collections('number_six_london').documents().import(number_six_products_insert, {action: 'create'})
-                                .then((result)=>{
-                                    console.log("INSERT DONE", (i / 100).toString(), result)
-                                }, (error)=>{
-                                    console.log("error was: ", error.importResults)
-                                })
+                                  console.log("i is ", i)
+                                  let client = new Typesense.Client({
+                                    'nodes': [{
+                                      'host': 'j1e5iohdgu2ya7nqp-1.a1.typesense.net', // For Typesense Cloud use xxx.a1.typesense.net
+                                      'port': '443',      // For Typesense Cloud use 443
+                                      'protocol': 'https'   // For Typesense Cloud use https
+                                    }],
+                                    'apiKey': 'qVEACzIepH6miYVADVgngiTOZOjxjKiR',
+                                    'connectionTimeoutSeconds': 180
+                                  })
+                                  await client.collections('number_six_london').documents().import(number_six_products_insert, {action: 'create'})
+                                  .then((result)=>{
+                                      console.log("INSERT DONE", (i / 100).toString(), result)
+                                  }, (error)=>{
+                                      console.log("error was: ", error.importResults)
+                                  })
                                 }
                                 catch(err){
-                                console.log("error was: ", err)
+                                  console.log("error was: ", err)
                                 }
                                 
                                 number_six_products_insert = []
                             }
-                            }
-                            else{
+                          }
+                          else{
                             console.log("issue with embedding insert")
-                            }
+                          }
                       
                     })
                     
                     // }
                     if(i === number_six_products.length - 1){
                       console.log("number_six_products_insert embeddings: ", number_six_products_insert)
-                      client.collections('number_six_london').documents().import(number_six_products_insert, {action: 'create'})
-                      .then((result)=>{
-                        console.log("FINAL INSERT DONE", result)
-                      }).then(()=>{
-
-                      })
+                        if(number_six_products_insert.length > 0){
+                          let client = new Typesense.Client({
+                            'nodes': [{
+                              'host': 'j1e5iohdgu2ya7nqp-1.a1.typesense.net', // For Typesense Cloud use xxx.a1.typesense.net
+                              'port': '443',      // For Typesense Cloud use 443
+                              'protocol': 'https'   // For Typesense Cloud use https
+                            }],
+                            'apiKey': 'qVEACzIepH6miYVADVgngiTOZOjxjKiR',
+                            'connectionTimeoutSeconds': 180
+                          })
+                          client.collections('number_six_london').documents().import(number_six_products_insert, {action: 'create'})
+                        .then((result)=>{
+                          console.log("FINAL INSERT DONE", result)
+                        }).then(()=>{
+                          console.log("DONE")
+                        })
+                      }
+                      
                     }
                   }
                   

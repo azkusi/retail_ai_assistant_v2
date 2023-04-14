@@ -27,6 +27,7 @@ function Recommender(props){
         let retailer = hostname.split('.')[0]
         if(retailer === "numbersixlondon"){
             set_gender_categories(mens_style_categories)
+            props.showHomeCallback()
         }
         window.scrollTo(0, 100);
     },[])
