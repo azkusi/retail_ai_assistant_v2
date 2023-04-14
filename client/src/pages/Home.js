@@ -8,6 +8,8 @@ import TextSearch from '../components/TextSearch';
 import ImageSearch from '../components/ImageSearch';
 import StyleSearch from '../components/StyleSearch';
 import Recommender from '../components/Recommender';
+import { number_six_style } from "../data/number_six";
+
 
 
 function Home() {
@@ -17,6 +19,7 @@ function Home() {
     const [show_home_items, set_show_home_items] = useState(true)
     const user = null
     const [styleinstructions, set_styleinstructions] = useState(false)
+    const [hostname, set_hostname] = useState("tailorai")
     
     const navigate = useNavigate()
     
@@ -58,7 +61,13 @@ function Home() {
     }
 
     useEffect(()=>{
-        window.scrollTo(0, 0);
+        // window.scrollTo(0, 0);
+        let hostname = window.location.hostname
+        let retailer = hostname.split('.')[0]
+        if(retailer === "numbersixlondon"){
+            set_hostname("numbersixlondon")
+        }
+
     })
 
 
@@ -126,12 +135,34 @@ function Home() {
         </div>
         {(mode !== "Style") && 
             <div style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", height: "100vh", marginTop: "10vh"}}>
-                {show_home_items && <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                    <img src={logo} alt="TailorAI Logo" style={{height: "50px", width: "50px"}} />
-                    <h1 style={{marginRight: "10px"}}>ailorAI</h1>
-                </div>}
+                {show_home_items ? 
+                    (hostname !== "numbersixlondon") ?
+                        <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                            <img src={logo} alt="TailorAI Logo" style={{height: "50px", width: "50px"}} />
+                            <h1 style={{marginRight: "10px"}}>ailorAI</h1>
+                        </div>
+                    
+                    :
+                        <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                            <h1 style={{fontWeight: "bold", letterSpacing: number_six_style[0].letterSpacing}}>number six</h1>
+                        </div>
+                    :
+                <></>
+                }
 
-                {show_home_items && <p style={{textAlign: "center", marginBottom: "40px"}}>Retail Search and Recommendation Engine</p>}
+                {show_home_items ?
+                    hostname !== "numbersixlondon" ?
+                    <p style={{textAlign: "center", marginBottom: "40px"}}>
+                        Retail Search and Recommendation Engine
+                    </p>
+                    : 
+                    <p style={{textAlign: "center", marginBottom: "40px", fontWeight: "bold", color: 'grey', fontSize: "13.5px"}}>
+                        AI Search & Recommendations powered by <span style={{fontWeight: "bold"}}>TailorAI</span>
+                    </p>
+                    :
+                <></>
+
+                }
                 
                 <div className="container">
                     <div className="row justify-content-center align-items-center">
