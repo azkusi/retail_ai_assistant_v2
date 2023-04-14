@@ -38,6 +38,8 @@ function RecommendationResults(props){
 
     const navigate = useNavigate()
 
+    const [hostname, set_hostname] = useState("tailorai")
+
     const [answer1, setAnswer1] = useState(null);
     const [answer2, setAnswer2] = useState(null);
 
@@ -84,9 +86,11 @@ function RecommendationResults(props){
             // do something with props.location.state.data
             
         //}
-        // if(location){
-
-        // }
+        let hostname = window.location.hostname
+        let retailer = hostname.split('.')[0]
+        if(retailer === "numbersixlondon"){
+            set_hostname("numbersixlondon")
+        }
         
     }, [])
 
@@ -143,7 +147,7 @@ function RecommendationResults(props){
                         backgroundColor: number_six_style[0].backgroundColor,
             }}
         >
-            <h1 style={{fontWeight: "bold", letterSpacing: number_six_style[0].letterSpacing}}>number six</h1>
+            {hostname === "numbersixlondon" ? <h1 style={{fontWeight: "bold", letterSpacing: number_six_style[0].letterSpacing}}>number six</h1> : <h1>Recommendation Results</h1>}
             
             {loading && 
                 <div className='center'
