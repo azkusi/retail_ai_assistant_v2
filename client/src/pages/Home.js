@@ -74,7 +74,7 @@ function Home() {
             set_numbersix_demo_modal(true)
         }
 
-    })
+    }, [])
 
 
   return(
