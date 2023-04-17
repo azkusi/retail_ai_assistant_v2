@@ -99,7 +99,7 @@ function ActualShopping(props){
         
         setTimeout(()=>{
             set_feedback_prompt(true)
-        }, 6000)
+        }, 60000)
         
     }, [])
 
@@ -412,7 +412,7 @@ function ActualShopping(props){
                                         </Form.Group>
 
                                         <br/>
-                                        
+
                                         <Form.Group className="align-items-left">
                                         <Form.Label>Would you like to sign up to receive outfit recommendations from <span style={{fontWeight: "bold"}}>numbersix</span> & other retailers you may like?</Form.Label>
                                             <Form.Check 
