@@ -35,6 +35,7 @@ function StyleInit(props){
         let retailer = hostname.split('.')[0]
         if(retailer === "numbersixlondon"){
             set_hostname("numbersixlondon")
+            set_gender_categories(mens_style_categories)
         }
         if(retailer === "demo"){
             set_numbersix_demo_modal(true)

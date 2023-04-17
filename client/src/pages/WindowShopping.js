@@ -30,7 +30,7 @@ function WindowShopping(props){
     const [load_more_count, set_load_more_count] = useState(0)
     const [signup_prompt, set_signup_prompt] = useState(false)
     const [signup_complete, set_signup_complete] = useState(false)
-
+    
     const inputRef = useRef(null)
 
     const [scrollPosition, setScrollPosition] = useState(0);
@@ -43,6 +43,7 @@ function WindowShopping(props){
     const [cancel_signup_hovered, set_cancel_signup_hovered] = useState(false)
     const [done_signup_hovered, set_done_signup_hovered] = useState(false)
     const [liked_items, set_liked_items] = useState([])
+    const [saved_items, set_saved_items] = useState([])
     const navigate = useNavigate()
 
     function handleLike() {
@@ -146,7 +147,8 @@ function WindowShopping(props){
                                 
                                 style={{"textDecoration": "none"}}
                             >
-                                <img alt={index} src={item.recommendation.document["product_image_url"]} style={{"maxHeight": 0.7*height, "maxWidth": 0.8*width, "padding": "10px"}}/>
+                                <img alt={index} src={item.recommendation.document["product_image_url"]} style={{"maxHeight": 0.7*height, "maxWidth": 0.8*width, boxShadow: "inset 0 0 0 1px rgba(0, 0, 0, 0.1)", 
+                                    padding: "5px"}}/>
 
                                 <div className="button-container" style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
                                 
@@ -197,15 +199,41 @@ function WindowShopping(props){
 
                                         </div>
 
-                                        <div>
-                                            <BookmarkBorderIcon style={{marginLeft: 0.1*width}} 
-                                                onClick={() => {
+                                        {saved_items.includes(item.recommendation.document["description"]) ? 
+
+                                            <div style={{display: "flex", alignItems: "center"} }>
+                                                <BookmarkIcon style={{marginLeft: 0.1*width}} 
+                                                    onClick={() => {
+                                                        if(saved_items.includes(item.recommendation.document["description"])){
+                                                            set_saved_items(saved_items.filter((selection)=>{return selection !== item.recommendation.document["description"]}))
+                                                        }
+                                                        else{
+                                                            set_saved_items([...saved_items, item.recommendation.document["description"]])
+                                                        }
+                                                        console.log("bookmark icon clicked")  
+                                                    }
+                                                    }
+                                                />
+                                                <p>Saved</p>
                                                     
-                                                    console.log("bookmark icon clicked")  
-                                                }
-                                                }
-                                            />
-                                        </div>
+                                            </div>
+                                            :
+                                            <div>
+                                                <BookmarkBorderIcon style={{marginLeft: 0.1*width}}
+                                                    onClick={() => {
+                                                        // window.alert("You must be signed in to save items")
+                                                        if(saved_items.includes(item.recommendation.document["description"])){
+                                                            set_saved_items(saved_items.filter((selection)=>{return selection !== item.recommendation.document["description"]}))
+                                                        }
+                                                        else{
+                                                            set_saved_items([...saved_items, item.recommendation.document["description"]])
+                                                        }
+                                                        console.log("bookmark icon clicked")
+                                                    }}
+                                                    
+                                                />
+                                            </div>
+                                        }
 
                                     </div>
                             
