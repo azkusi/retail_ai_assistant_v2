@@ -11,6 +11,9 @@ import TextResults from './pages/TextResults';
 import Home from './pages/Home';
 import ClusterInserts from './components/ClusterInserts';
 import RecommendationResults from './components/RecommendationResults';
+import ShoppingHome from './pages/ShoppingHome';
+import SearchResults from './components/SearchResults';
+import StyleInit from './pages/StyleInit';
 
 
 
@@ -104,11 +107,18 @@ function App() {
 
       <Routes>
         {/* <Route path="/" element={<Results />}/> */}
-        <Route path="/" element={<Home />}/>
+        {/* <Route path="/" element={<Home />}/> */}
+        <Route path="/" element={<StyleInit/>}/>
         <Route path="/text-search-results/:id" element={<TextResults/>}/>
+        <Route path="/search-results/:id" element={<SearchResults/>}/>
+
         <Route path="/image-search-results/:id" element={<TextResults/>}/>
         <Route path="/cluster-inserts" element={<ClusterInserts/>}/>
         <Route path="/recommendation-results" element={<RecommendationResults/>} />
+        <Route path="/shopping-home" element={<ShoppingHome/>} />
+
+        <Route path="/styleinitialiser" element={<StyleInit/>} />
+
 
       </Routes>
       

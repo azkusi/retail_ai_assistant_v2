@@ -86,8 +86,8 @@ function RecommendationResults(props){
             // do something with props.location.state.data
             
         //}
-        let hostname = window.location.hostname
-        let retailer = hostname.split('.')[0]
+        let host_name = window.location.hostname
+        let retailer = host_name.split('.')[0]
         if(retailer === "numbersixlondon"){
             set_hostname("numbersixlondon")
         }
