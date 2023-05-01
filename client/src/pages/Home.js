@@ -2,20 +2,27 @@ import '../App.css';
 import logo from '../data/logo.png';
 import { useEffect, useState } from 'react';
 import useWindowSize from '../hooks/useWindow';
-import { Modal, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Modal, Dropdown, DropdownButton, Row, Col, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import TextSearch from '../components/TextSearch';
 import ImageSearch from '../components/ImageSearch';
 import StyleSearch from '../components/StyleSearch';
 import Recommender from '../components/Recommender';
 import { number_six_style } from "../data/number_six";
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch, { SwitchProps } from '@mui/material/Switch';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import {retailers} from '../data/retailers';
+
 
 
 
 function Home() {
 
-    const [mode, setMode] = useState("Recommend")
-    const [selectedButton, setSelectedButton] = useState("Recommend");
+    const [mode, setMode] = useState("Search")
+    const [selectedButton, setSelectedButton] = useState("Search");
     const [show_home_items, set_show_home_items] = useState(true)
     const user = null
     const [styleinstructions, set_styleinstructions] = useState(false)
@@ -23,12 +30,18 @@ function Home() {
     
     const navigate = useNavigate()
     
-    const [gender, set_gender] = useState("mens")
+    const [gender, set_gender] = useState("womens_clothing")
     const [number_six_demo_modal, set_numbersix_demo_modal] = useState(false)
     const [view_numsix_hovered, set_view_numsix_hovered] = useState(false)
     const [close_numsix_hovered, set_close_numsix_hovered] = useState(false)
     
 
+    const [mens_selected, set_mens_selected] = useState(false)
+    const [womens_selected, set_womens_selected] = useState(true)
+
+
+    const width = useWindowSize().width
+    const height = useWindowSize().height
   
 
   const handleButtonClick = (button) => {
@@ -65,20 +78,20 @@ function Home() {
 
     useEffect(()=>{
         // window.scrollTo(0, 0);
-        let hostname = window.location.hostname
-        let retailer = hostname.split('.')[0]
-        if(retailer === "numbersixlondon"){
-            set_hostname("numbersixlondon")
-        }
-        if(retailer === "demo"){
-            set_numbersix_demo_modal(true)
-        }
+        // let hostname = window.location.hostname
+        // let retailer = hostname.split('.')[0]
+        // if(retailer === "numbersixlondon"){
+        //     set_hostname("numbersixlondon")
+        // }
+        // if(retailer === "demo"){
+        //     set_numbersix_demo_modal(true)
+        // }
 
     }, [])
 
 
   return(
-    <div style={{backgroundColor: hostname === "numbersixlondon" ? number_six_style[0].backgroundColor : "white"}}>
+    <div style={{backgroundColor: number_six_style[0].backgroundColor, paddingTop: "10px"}}>
         {/* <h4>Sign Up</h4>
         <h4>Login</h4> */}
         {number_six_demo_modal && <Modal show onHide={()=>{set_numbersix_demo_modal(false)}}>
@@ -154,13 +167,14 @@ function Home() {
                             // handleButtonClick("Style")
 
                             // If user is logged in take them to logged in recommender page instead of showing them recommender
-                            if(user){
-                                navigate('/recommendation-results', {state: {user: user}})
-                            }
-                            else{
-                                setMode("Recommend")
+                            // if(user){
+                            //     navigate('/recommendation-results', {state: {user: user}})
+                            // }
+                            // else{
+                            //     setMode("Recommend")
                                 
-                            }
+                            // }
+                            window.alert("This feature is coming soon, sign up to be notified when it arrives!")
                         }}
                     >
                         Recommend
@@ -189,8 +203,9 @@ function Home() {
                 {show_home_items ? 
                     (hostname !== "numbersixlondon") ?
                         <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                            <img src={logo} alt="TailorAI Logo" style={{height: "50px", width: "50px"}} />
-                            <h1 style={{marginRight: "10px"}}>ailorAI</h1>
+                            {/* <img src={logo} alt="TailorAI Logo" style={{height: "50px", width: "50px"}} /> */}
+                            {/* <h1 style={{marginRight: "10px"}}>ailorAI</h1> */}
+                            <h1 style={{fontWeight: "bold", letterSpacing: "0.1em", color: number_six_style[0].color, fontFamily: number_six_style[0].fontFamily}}>TailorAI</h1>
                         </div>
                     
                     :
@@ -206,8 +221,8 @@ function Home() {
 
                 {show_home_items ?
                     hostname !== "numbersixlondon" ?
-                    <p style={{textAlign: "center", marginBottom: "40px"}}>
-                        Retail Search and Recommendation Engine
+                    <p style={{textAlign: "center", marginBottom: "40px", color: 'grey', fontSize: "13.5px"}}>
+                        Personalised Fashion Search and Recommendation Engine
                     </p>
                     : 
                     <p style={{textAlign: "center", marginBottom: "40px", color: 'grey', fontSize: "13.5px"}}>
@@ -221,29 +236,60 @@ function Home() {
                 <div className="container">
                     <div className="row justify-content-center align-items-center">
                         <div className="col-md-6">
-                            {(mode === "Search") && <TextSearch showHomeCallback={removeHomeItems} backCallback={handleButtonClick}/>}
-                            {/* If user is logged in take them to logged in recommender page instead of showing them recommender */}
-                            
+                            {(mode === "Search") && <TextSearch showHomeCallback={removeHomeItems} backCallback={handleButtonClick} collection={gender}/>}
+                            {(mode === "Search") && 
+                                <FormGroup>
+                                        <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                                            <button  
+                                                // onMouseEnter={() => set_mens_selected(true)}
+                                                // onMouseLeave={() => set_mens_selected(false)}
+                                                style={{
+                                                    
+                                                    border: 'none',
+                                                    backgroundColor: mens_selected ? '#1a3c6c' : 'white',
+                                                    color: mens_selected ? 'white' : '#1a3c6c',
+                                                    
+                                                    borderRadius: '0',
+                                                    cursor: 'pointer',
+                                                }}
+                                                onClick={()=>{
+                                                    set_gender("mens_clothing")  
+                                                    set_mens_selected(true)
+                                                    set_womens_selected(false)                          
+                                                    
+                                                }}
+                                                >
+                                                Men's
+                                            </button>
 
-                            {/* {(mode === "Image") && <ImageSearch showHomeCallback={removeHomeItems} backCallback={handleButtonClick}/>} */}
-                            
-                            {/* <br/>
-                            <br/> */}
+                                        
 
-                            
-                                 {/* <Dropdown >
-                                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                         Choose your search method
-                                     </Dropdown.Toggle>
-                    
-                                     <Dropdown.Menu>
-                                         <Dropdown.Item onClick={()=>{handleButtonClick("Text")}}>Search by Text</Dropdown.Item>
-                                         <Dropdown.Item onClick={()=>{handleButtonClick("Image")}}>Search by Image</Dropdown.Item>
-                                         <Dropdown.Item onClick={()=>{handleButtonClick("Style")}}>Search by Style</Dropdown.Item>
-                                     </Dropdown.Menu>
-                                 </Dropdown> */}
-                                
-                            
+                                            <button 
+                                                // onMouseEnter={() => set_womens_hovered(true)}
+                                                // onMouseLeave={() => set_womens_hovered(false)}
+                                                style={{
+                                                    border: 'none',
+                                                    backgroundColor: womens_selected ? '#1a3c6c' : 'white',
+                                                    color: womens_selected ? 'white' : '#1a3c6c',
+                                                    
+                                                    borderRadius: '0',
+                                                    cursor: 'pointer',
+                                                }}
+                                                onClick={()=>{
+                                                    
+                                                    set_gender("womens_clothing")
+                                                    set_womens_selected(true)
+                                                    set_mens_selected(false)  
+                                                    
+                                                    
+
+                                                }}
+                                            >
+                                                Women's
+                                            </button>
+                                        </div>
+                                </FormGroup>
+                            }  
                             
                         </div>
                     </div>

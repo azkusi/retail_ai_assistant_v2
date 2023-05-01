@@ -128,7 +128,7 @@ function ShoppingHome() {
                     {hostname ==="numbersixlondon" ? 
                         <h1 style={{fontWeight: "bold", letterSpacing: number_six_style[0].letterSpacing, color: number_six_style[0].color, fontFamily: number_six_style[0].fontFamily}}>number six</h1>
                         :
-                        <h2> Tune Prerences</h2>
+                        <h2> Window Shopping</h2>
                     }
                     <br/>
                     {data && <WindowShopping data={data} setLoadingFalse={setLoadingFalse}/>}

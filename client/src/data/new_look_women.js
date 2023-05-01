@@ -1,6 +1,6 @@
 
-export const new_look_womens = {
-    "product":[
+export const new_look_womens = [
+
     {
     "product_image_url":"https://media3.newlookassets.com/i/newlook/867274201.jpg?strip=true&qlt=50",
     "product_url":"https://www.newlook.com/uk/womens/clothing/tops/black-jersey-square-neck-vest/p/867274201",
@@ -1706,5 +1706,3 @@ export const new_look_womens = {
     "price":"£23.99"
     }
     ]
-    }
-    

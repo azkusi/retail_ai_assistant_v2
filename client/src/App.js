@@ -14,6 +14,12 @@ import RecommendationResults from './components/RecommendationResults';
 import ShoppingHome from './pages/ShoppingHome';
 import SearchResults from './components/SearchResults';
 import StyleInit from './pages/StyleInit';
+import UserOnboarding from './pages/UserOnboarding';
+import TailorAI from './pages/TailorAIHome';
+import SignUp from './pages/SignUp';
+import Login from './pages/Login';
+import Header from './components/Header';
+import ForgotPassword from './pages/ForgotPassword';
 
 
 
@@ -108,16 +114,25 @@ function App() {
       <Routes>
         {/* <Route path="/" element={<Results />}/> */}
         {/* <Route path="/" element={<Home />}/> */}
-        <Route path="/" element={<StyleInit/>}/>
+        <Route path="/" element={<UserOnboarding />}/>
+
+        {/* <Route path="/" element={<StyleInit/>}/> */}
         <Route path="/text-search-results/:id" element={<TextResults/>}/>
         <Route path="/search-results/:id" element={<SearchResults/>}/>
 
         <Route path="/image-search-results/:id" element={<TextResults/>}/>
         <Route path="/cluster-inserts" element={<ClusterInserts/>}/>
         <Route path="/recommendation-results" element={<RecommendationResults/>} />
-        <Route path="/shopping-home" element={<ShoppingHome/>} />
+        {/* <Route path="/shopping-home" element={<ShoppingHome/>} /> */}
+        <Route path="/home/:id" element={<TailorAI/>} />
 
         <Route path="/styleinitialiser" element={<StyleInit/>} />
+        <Route path="/signup" element={<SignUp/>} />
+        <Route path="/login" element={<Login/>} />
+
+        <Route path="/header" element={<Header/>} />
+        <Route path="/forgot-password" element={<ForgotPassword/>} />
+
 
 
       </Routes>

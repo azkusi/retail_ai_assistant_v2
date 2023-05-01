@@ -16,8 +16,12 @@ function TextSearch(props){
 
     const height = useWindowSize().height
     const width = useWindowSize().width
+
+    const[chat_width, setChatWidth] = useState(width * 0.3)
+    const[chat_height, setChatHeight] = useState(height * 0.3)
     
     useEffect(()=>{
+        
         console.log("TextSearch component rendered")
     },[])
 
@@ -94,7 +98,9 @@ function TextSearch(props){
         //             </div>
         //             :
     
-                    <div className="input-group mb-3">
+                    <div className="input-group mb-3"
+                        style={{width: 0.8*width, margin: "0 auto", padding: "20px"}}
+                    >
                         <input ref={inputRef} 
                             onKeyDown={
                                 (e)=>{
@@ -105,7 +111,7 @@ function TextSearch(props){
                                         }
                                         else{
                                             //collection should be all clothing
-                                            navigate('/text-search-results/'+inputRef.current.value)
+                                            navigate('/search-results/'+inputRef.current.value, {state: {collection: props.collection}})
                                             // sendUserRequest(inputRef.current.value)
                                         }
                                     }
@@ -119,7 +125,7 @@ function TextSearch(props){
                                 }
                                 else{
                                     //collection should be all clothing
-                                    navigate('/text-search-results/'+inputRef.current.value)
+                                    navigate('/search-results/'+inputRef.current.value)
                                     // sendUserRequest(inputRef.current.value)
                                 }
                                

@@ -56,3 +56,20 @@
 
 a { color: #00c; }
 a:focus {color: #cc0; }
+
+.fade-out-left {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 1s, transform 1s;
+}
+
+.fade-in-right {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 1s, transform 1s;
+}
+
+.fade-in-right.show {
+  opacity: 1;
+  transform: translateX(0%);
+}

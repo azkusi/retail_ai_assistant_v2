@@ -20,19 +20,15 @@ export const womens_style_categories = [
         "image_url": "https://romans-cdn.rlab.net/images/original/b129dcda-3e7f-4512-b93e-a3003b895127.jpg"
     },
     {
-        "category": "loungewear",
+        "category": "lounge-wear",
         "image_url": "https://romans-cdn.rlab.net/images/original/13d7f36c-66b1-4c7c-a261-672715d9f533.jpg"
     },
     {
-        "category": "athleisure",
-        "image_url": "https://romans-cdn.rlab.net/images/original/5f814ff7-1c20-4a45-a63c-b83b317a75a0.jpg"
-    },
-    {
-        "category": "gym/sportswear",
+        "category": "gym-wear",
         "image_url": "https://cdn.shopify.com/s/files/1/0247/9797/0513/products/BT0610_BT0591_2_Silver-sports-bra-leggings_026e26ac-0714-4fcb-862f-b762f6113d15_2048x2048.jpg?v=1664451288"
     },
     {
-        "category": "streetwear",
+        "category": "street-wear",
         "image_url": "https://cdn-img.prettylittlething.com/5/2/9/8/5298edd286cee5de511695f9c506bcd543440270_cmy1694_3.jpg?imwidth=400"
     }
 ]
