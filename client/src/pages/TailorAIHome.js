@@ -180,64 +180,91 @@ function TailorAI(props){
     }
 
 
-    function retrieveCategoryRecommendations(selected_categories, selected_retailers, already_seen){
+    function retrieveCategoryRecommendations(selected_categories, already_seen){
         //send to python server where will loop through
         //3 retailers and 3 categories and return 9 recommendations
 
 
         axios.post("https://us-central1-retail-assistant-demo.cloudfunctions.net/getCategoryRecommendations", {
             "categories": selected_categories,
-            "retailers": selected_retailers,
             "already_seen": already_seen
         }).then((response)=>{
             console.log("retrieved cold start recommendations:", response.data)
             
-            const category_recommendation_sets = response.data.result
-            console.log("Category Recommendations sets: ", category_recommendation_sets)
-
-            if(category_recommendation_sets === null){
-                let i = 0;
-                let categories_array = []
-                for(i = 0; i < category_recommendation_sets.length; i++){
-                    let category_object = {}
-                    category_object["category"] = category_recommendation_sets[i].category
-                    category_object["recommendations"] = category_recommendation_sets[i].recommendations
-                    categories_array.push(category_object)
-                }
+            if(Object.keys(response.data.result).length === 0){
+                console.log("no recommendations")
+                set_loading(false)
+                return null
+            }
+            
+            const recommendation_sets =  response.data.result.map((category_recommendation_object)=>{
+                    return (
+                        {category: category_recommendation_object["category"], recommendations: category_recommendation_object.recommendations.filter((recommendation, index)=>{
+                            const firstIndex = category_recommendation_object.recommendations.findIndex(item => item.document.description === recommendation.document.description);
+                            return firstIndex === index;
+                        })}
+                    )
                     
-                if(i >= category_recommendation_sets.length){
-                    set_category_recommendations(categories_array)
-                }
 
+                
+
+                
+            })
+            // const temp_recommendation_sets = recommendation_sets
+            console.log("category Recommendations sets: ", recommendation_sets)   
+            if(category_recommendations === null){
 
             
-                set_loading(false)
-                set_category_recommendations(category_recommendation_sets)
+                let i = 0;
+                let all_categories_recommendations_array = []
+
+                for(i = 0; i < recommendation_sets.length; i++){
+                    console.log("i:", i)
+                    let category_recommendations_array = []
+                    let category_recommendations_object = {}    
+
+                    category_recommendations_object["category"] = recommendation_sets[i].category
+                    
+                    category_recommendations_array = [...category_recommendations_array, ...recommendation_sets[i].recommendations.filter((item)=>{
+                        return !(already_seen.includes(item.document.description))
+                    })]
+                    category_recommendations_object["recommendations"] = category_recommendations_array
+                    
+                    if(i >= recommendation_sets.length - 1){
+                        console.log("HELLO")
+                        all_categories_recommendations_array.push(category_recommendations_object)
+                        set_loading(false)
+                        set_category_recommendations(all_categories_recommendations_array)
+                        console.log("all categories array: ", all_categories_recommendations_array)
+                    }
+                }
             }
             else{
                 let i = 0;
-                let categories_array = category_recommendations
+                let all_categories_recommendations_array = category_recommendations
 
-                for(i = 0; i < categories_array.length; i++){
-                    let category_object = categories_array[i]
-                    let category_recommendation_hits_array = categories_array[i].recommendations
+                for(i = 0; i < all_categories_recommendations_array.length; i++){
                     let j = 0;
-                    for(j = 0; j < category_recommendation_sets.length; j++){
-                        if(categories_array[i].category === category_recommendation_sets[j].category){
-                            category_recommendation_hits_array = [...category_recommendation_hits_array, ...category_recommendation_sets[j].recommendations]
-                            category_object["recommendations"] = category_recommendation_hits_array 
-                            categories_array[i] = category_object
+                    let category_recommendations_array = all_categories_recommendations_array[i].recommendations
+                    let category_recommendations_object = all_categories_recommendations_array[i]
+                    
+                    for(j = 0; j < recommendation_sets.length; j++){
+                        if(recommendation_sets[j].category === all_categories_recommendations_array[i].category){
+                            category_recommendations_array = [...category_recommendations_array, ...recommendation_sets[j].recommendations.filter((item)=>{
+                                return !(already_seen.includes(item.document.description))
+                            })]
+                            category_recommendations_object["recommendations"] = category_recommendations_array
+                            all_categories_recommendations_array[i] = category_recommendations_object
+                            
+                            if(j >= recommendation_sets.length - 1){
+                                all_categories_recommendations_array.push(category_recommendations_object)
+                                set_loading(false)
+                                set_category_recommendations(all_categories_recommendations_array)
+                                console.log("all categories array: ", all_categories_recommendations_array)
+                            }
                         }
                     }
-                    // if(j >= category_recommendation_sets.length){
-                    //     categories_array.push(category_object)
-                    // }
                 }
-                    
-                if(i >= categories_array.length){
-                    set_category_recommendations(categories_array)
-                }
-
             }
            
         }).catch((error)=>{
@@ -303,7 +330,7 @@ function TailorAI(props){
                         set_selected_retailers(location.state.retailers)
                         set_already_seen(location.state.already_seen)
                         retrieveRetailerRecommendations(location.state.categories, location.state.retailers, location.state.already_seen)
-                        // retrieveCategoryRecommendations(location.state.categories, location.state.retailers, location.state.already_seen)
+                        // retrieveCategoryRecommendations(location.state.categories, location.state.already_seen)
                     }
                     else{
     
@@ -319,7 +346,7 @@ function TailorAI(props){
                                 const already_seen = doc.data().already_seen
                                 console.log("updated user")
                                 retrieveRetailerRecommendations(categories, retailers, already_seen)
-                                // retrieveCategoryRecommendations(location.state.categories, location.state.retailers, location.state.already_seen)
+                                // retrieveCategoryRecommendations(location.state.categories, location.state.already_seen)
 
                             }
                             
@@ -342,7 +369,7 @@ function TailorAI(props){
                         set_selected_retailers(location.state.retailers)
                         set_already_seen(location.state.already_seen)
                         retrieveRetailerRecommendations(location.state.categories, location.state.retailers, location.state.already_seen)
-                        // retrieveCategoryRecommendations(location.state.categories, location.state.retailers, location.state.already_seen)
+                        // retrieveCategoryRecommendations(location.state.categories, location.state.already_seen)
                         console.log("location state: ", location.state)
                     }
                     //check for params
@@ -361,7 +388,7 @@ function TailorAI(props){
                                         set_selected_retailers(data.retailers)
                                         set_already_seen(data.already_seen)
                                         retrieveRetailerRecommendations(data.categories, data.retailers, data.already_seen)
-                                        // retrieveCategoryRecommendations(data.categories, data.retailers, data.already_seen)
+                                        // retrieveCategoryRecommendations(data.categories, data.already_seen)
                                     })
                                 }
                                  
@@ -478,6 +505,19 @@ function TailorAI(props){
                                         <Row xl={4} lg={4} md={4} sm={4} xs={4}>
                                             <Col >
                                                 <h3 style={{fontWeight: 'bolder'}}>{retailer_object.retailer}</h3>
+                                                <div
+                                                    onClick={()=>{
+                                                        console.log("See more")
+                                                        navigate(`/recommendation-results/${retailer_object.retailer}`, {state: {"categories": selected_categories, "retailer": [retailer_object.retailer]}})}}
+                                                >
+                                                    <Link
+                                                        to='#'
+                                                        
+                                                    >
+                                                        <p>See more</p>
+                                                    </Link>
+                                                </div>
+                                                
                                             </Col>
                                         </Row>
 
@@ -675,7 +715,7 @@ function TailorAI(props){
                     ))}
                     <br/>
 
-                    {/* {category_recommendations.map((category_object, category_object_index) => (
+                    {/* { category_recommendations && category_recommendations.map((category_object, category_object_index) => (
                         // container
                         ((typeof(category_object.recommendations) !== "string") ? 
                         category_object.recommendations.length > 0
@@ -694,10 +734,14 @@ function TailorAI(props){
                                 >
                                     <div key={category_object_index}>
                                         
-                                        <h3>{category_object.retailer}</h3>
+
+                                        <Row xl={4} lg={4} md={4} sm={4} xs={4}>
+                                            <Col >
+                                                <h3 style={{fontWeight: 'bolder'}}>{category_object.category}</h3>
+                                            </Col>
+                                        </Row>
 
 
-                                        
                                         <Row>
                                             <Col xs={1} 
                                                 style={{ alignItems: 'center', zIndex: 100 }}
@@ -706,7 +750,7 @@ function TailorAI(props){
                                                     {width > 600 && <Button variant="outline-secondary"
                                                         // onClick={() => handleScroll(-(width*0.8))}
                                                         onClick={() => {
-                                                            handleScroll(category_object.retailer, -(width*0.8))
+                                                            handleScroll(category_object.category, -(width*0.8))
                                                         }}
                                                     >
                                                         {"<"}
@@ -717,21 +761,12 @@ function TailorAI(props){
                                             <Col xs={10}>
                                                 <Row>
                                                     <div
-                                                        // onScroll={() => {
-                                                        //     const div = refs.current[retailer_object.retailer]
-                                                        //     if (div) {
-                                                        //         const halfwayPoint = div.scrollWidth / 2;
-                                                        //         if (div.scrollLeft >= halfwayPoint) {
-                                                        //             retrieveRetailerRecommendations(selected_categories, [retailer_object.retailer], already_seen)
-                                                        //         } 
-                                                        //     }
-                                                        // }}
+                                                       
                                                         style={{ display: 'flex', overflowX: 'scroll', scrollBehavior: 'smooth' }}
-                                                        ref={(el) => (refs.current[category_object.retailer] = el)}
+                                                        ref={(el) => (refs.current[category_object.category] = el)}
                                                     >
                                                         {category_object.recommendations.map((recommendation, recommendation_index_number) => {
                                                             return(
-                                                                // retailer_recommendation_object.recommendations.results[0].hits.map((recommendation, recommendation_index_number) => (
                                                                     (recommendation.document.product_image_url && 
                                                                     <Link
                                                                         to="#"
@@ -751,8 +786,13 @@ function TailorAI(props){
                                                                             }}
                                                                                 key={recommendation_index_number} src={recommendation.document.product_image_url} alt={`${recommendation_index_number}`} 
                                                                             />
+                                                                            {("brand" in recommendation.document) && <h5>{recommendation.document.brand}</h5>}
+                                                                            <h5>{recommendation.document.retailer}</h5>
                                                                             <p>{recommendation.document.description}</p>
                                                                             <label>£{recommendation.document.price}</label>
+                                                                            <div>
+                                                                                
+                                                                            </div>
                                                                         </div>
                                                                     </Link>
                                                                     )
@@ -773,45 +813,36 @@ function TailorAI(props){
                                                             // onClick={() => handleScroll((width*0.65))}>{">"}
                                                             onClick={() => {
 
-                                                                set_click_right_count(click_right_count+1)
-                                                                handleScroll(category_object.retailer, (width*0.8))
+                                                                // set_click_right_count(click_right_count+1)
+                                                                handleScroll(category_object.category, (width*0.8))
 
                                                                 
                                                                 
                                                                 let i = 0;
                                                                 let temp_already_seen = already_seen
-
-                                                                for(i; i < retailer_recommendations[category_object_index].recommendations.length; i++){
-                                                                    if(! (temp_already_seen.includes(retailer_recommendations[category_object_index].recommendations[i].document.description))){
-                                                                        temp_already_seen.push(retailer_recommendations[category_object_index].recommendations[i].document.description)
-                                                                    }                        
-                                                                }
-
-                                                                if(load_more_count === 0){
-                                                                    set_load_more_count(1)
-                                                                    retrieveRetailerRecommendations(selected_categories, [category_object.retailer], temp_already_seen)
-                                                                }
-
-                                                                // if(load_more_count >= 8){
-                                                                //     console.log("No more recommendations")
-                                                                // }
-                                                                
-                                                                if(i >= retailer_recommendations[category_object_index].recommendations.length){
-                    
-                                                                    if(click_right_count >= (3)){
-                                                                        set_load_more_count(load_more_count+1)
-                                                                        retrieveRetailerRecommendations(selected_categories, [category_object.retailer], temp_already_seen)
-                                                                        set_click_right_count(0)
-
-                                                                        set_already_seen(temp_already_seen)
-                                                                        if(!user){
-                                                                            db.collection("anonymous_users").doc(id.split("-")[1]).update({
-                                                                                already_seen: temp_already_seen
-                                                                            })
-                                                                        }
+                                                                for(i; i < category_recommendations[category_object].recommendations.length; i++){
+                                                                    if(! (temp_already_seen.includes(category_recommendations[category_object_index].recommendations[i].document.description))){
+                                                                        temp_already_seen.push(category_recommendations[category_object_index].recommendations[i].document.description)
                                                                     }
                                                                 }
-                                                                
+                                                                if(i >= 15){
+                                                                    console.log("i is greater than 15", temp_already_seen)
+                                                                    
+                                                                    set_already_seen(temp_already_seen)
+                                                                    if(!user){
+                                                                        db.collection("anonymous_users").doc(id.split("-")[1]).update({
+                                                                            already_seen: temp_already_seen
+                                                                        })
+                                                                    }
+                                                                    else{
+                                                                        db.collection("users").doc(id.split("-")[1]).update({
+                                                                            already_seen: temp_already_seen
+                                                                        })
+                                                                    }
+
+                                                                    // set_loading(true)
+                                                                    // retrieveCategoryRecommendations(selected_categories, temp_already_seen)
+                                                                }
                                                                 
 
                                                             }}
@@ -825,9 +856,9 @@ function TailorAI(props){
                                                             onClick={()=>{
                                                                 let i = 0;
                                                                 let temp_already_seen = already_seen
-                                                                for(i; i < retailer_recommendations[category_object_index].recommendations.length; i++){
-                                                                    if(! (temp_already_seen.includes(retailer_recommendations[category_object_index].recommendations[i].document.description))){
-                                                                        temp_already_seen.push(retailer_recommendations[category_object_index].recommendations[i].document.description)
+                                                                for(i; i < category_recommendations[category_object_index].recommendations.length; i++){
+                                                                    if(! (temp_already_seen.includes(category_recommendations[category_object_index].recommendations[i].document.description))){
+                                                                        temp_already_seen.push(category_recommendations[category_object_index].recommendations[i].document.description)
                                                                     }
                                                                 }
                                                                 if(i >= 15){
@@ -839,14 +870,14 @@ function TailorAI(props){
                                                                             already_seen: temp_already_seen
                                                                         })
                                                                     }
-                                                                    // else{
-                                                                    //     db.collection("users").doc(user.uid).update({
-                                                                    //         already_seen: temp_already_seen
-                                                                    //     })
-                                                                    // }
+                                                                    else{
+                                                                        db.collection("users").doc(id.split("-")[1]).update({
+                                                                            already_seen: temp_already_seen
+                                                                        })
+                                                                    }
 
                                                                     set_loading(true)
-                                                                    retrieveRetailerRecommendations(selected_categories, [category_object.retailer], temp_already_seen)
+                                                                    // retrieveCategoryRecommendations(selected_categories, temp_already_seen)
                                                                 }
                                                                 
                                                             }}
@@ -867,14 +898,14 @@ function TailorAI(props){
                             </div>
                             :
                             <div key={category_object_index}>
-                                <h1>{category_object.retailer}</h1>
+                                <h1>{category_object.category}</h1>
                                 <h4>More recommendations coming soon</h4>
                                 <br/>
                                 <br/>
                             </div>
                             :
                             <div key={category_object_index}>
-                                <h1>{category_object.retailer}</h1>
+                                <h1>{category_object.category}</h1>
                                 <h4>More recommendations coming soon</h4>
                                 <br/>
                                 <br/>
@@ -890,6 +921,7 @@ function TailorAI(props){
                         <Modal.Body style={{textAlign: "center"}}>
                             <img alt={preview_item["description"]} src={preview_item["product_image_url"]} style={{"maxHeight": 0.5*height, "maxWidth": 0.5*width, "padding": "10px"}}/>
                             <br/>
+                            <h5>{preview_item["retailer"]}</h5>
                             {("brand" in preview_item) && <h5>{preview["brand"]}</h5>}
                             <p 
                                 style={{

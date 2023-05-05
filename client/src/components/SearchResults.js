@@ -224,77 +224,9 @@ function sendUserRequest(data){
 
               }}>
                 <br/>
-                  {/* 
-                  <Container style={{
-                      "width": 0.85*width, "margin": "auto", "height": 0.2*height, "overflowX": "scroll",
-                          boxShadow: "inset 0 0 0 1px rgba(0, 0, 0, 0.1)", 
-                          padding: "5px",
-                          position: "relative"}}>
-                      <h4>Scorll & select your favourite retailers</h4>
-
-                      <Row xl={4}lg={4} md={3} sm={3} xs={2}>
-                      {retailers_dictionary.map((item, index)=>{
-                          return( 
-                          <Col key={index}>
-                              
-                                  <img alt={index} 
-                                      src={item["image_url"]} 
-                                      style={{
-                                          "maxHeight": 0.2*height, 
-                                          "maxWidth": 0.8*width, 
-                                          "margin": "10px", 
-                                          "borderStyle": selected_retailers.length === 0 ? null : (selected_retailers.includes(item) ? 'solid' : "none"),
-                                          "borderColor": selected_retailers.length === 0 ? null : (selected_retailers.includes(item) ? 'blue' : null),
-                                          "opacity": selected_retailers.length === 0 ? null : (selected_retailers.includes(item) ? 0.2 : 1)
-                                      }}
-                                      onClick={()=>{
-                                          console.log("category: ", item.category)
-                                          if(selected_retailers.includes(item)){
-                                              set_selected_retailers(selected_retailers.filter((category)=>{return category !== item}))
-                                          }
-                                          else{
-                                              set_selected_retailers([...selected_retailers, item])
-                                              console.log("Selected categories length: ", selected_retailers)
-                                          }
-                                      }} 
-                                  />
-                                  <h4>{item["category"]}</h4>
-                              
-                              
-
-                          </Col>
-                          )
-                      })}
-                      </Row>
-                        <button 
-                          onMouseEnter={() => set_done_retailer_selection_hovered(true)}
-                          onMouseLeave={() => set_done_retailer_selection_hovered(false)}
-                          style={{
-                              border: 'none',
-                              backgroundColor: done_retailer_selection_hovered ? 'white' : '#1a3c6c',
-                              color: done_retailer_selection_hovered ? '#1a3c6c' : 'white',
-                              padding: '10px 20px',
-                              borderRadius: '0',
-                              cursor: 'pointer',
-                              position: 'sticky',
-                              bottom: '0',
-                              right: '0'
-                          }}
-                          onClick={()=>{
-                              navigate("/")
-                              sendUserRequest(id)
-                              // set_feedback_complete(true)
-                              
-                          }
-                      }>
-                          Done
-                      </button>
-                      
-                  </Container> */}
                   
               </div>
               <br/>
-              {/* <br/> */}
 
 
               {search_results &&

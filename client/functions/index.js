@@ -562,6 +562,110 @@ exports.getRetailerRecommendations = functions.runWith({ memory: "1GB" }).https.
 
 
 
+
+exports.getMoreRetailerRecommendations = functions.runWith({ memory: "1GB" }).https.onRequest((request, response) => {
+    // response.set('Access-Control-Allow-Origin', '*');
+
+    cors(request, response, async()=>{
+        functions.logger.info("Hello logs!", {structuredData: true});
+        //receive user request and generate embeddings for the request
+        // {"casual": https://casual.png}
+        console.log("data sent: ", request.body)
+        
+        const categories = request.body["categories"]
+        const retailers = request.body["retailers"]
+        let already_seen = request.body["already_seen"]
+        const url = 'https://europe-west2-clip-embeddings.cloudfunctions.net/get_more_recommendations_from_specific_retailers'
+        const recommendations = []
+
+        console.log("categories: ", categories)
+        console.log("category_embeddings: ", category_embeddings)
+        console.log("already_seen: ", already_seen)
+        try{
+            for (const retailer of retailers) {
+                console.log("retailer: ", retailer)
+                const retailer_recommendations = []
+                
+                for (const category of categories) {
+                // const iteration = i
+                
+                    const postData = {
+                        "category": category,
+                        "collection": retailers_converter[retailer],
+                        "already_seen": already_seen,
+                        "embedding": category_embeddings[category]
+                    };
+                    
+                    console.log("collection is: ", retailers_converter[retailer]);
+                    // const promise = (
+                    try{
+                        const query = await axios.post(url, postData)
+                        if(query.data === "Cloud Functions Error"){
+                            console.log("error: ", query.data)
+                            const promise = {"retailer": retailer, "category": category, "recommendations": []};
+                            retailer_recommendations.push(promise);
+                        }
+                        else{
+                            console.log("query data is: ", JSON.stringify(query.data));
+                            const filtered_query = query.data.results[0].hits.filter((recommendation, index)=>{
+                                return(
+                                    !(already_seen.includes(recommendation.document.description))
+                                )
+                            })
+                            
+                            const promise = {"retailer": retailer, "category": category, "recommendations": filtered_query};
+                            console.log("filtered data is: ", JSON.stringify(filtered_query));
+                            // console.log("result is: ", res)
+                
+                            retailer_recommendations.push(promise);
+                            already_seen = already_seen.concat(filtered_query.map((recommendation, index)=>{
+                                return recommendation.document.description
+                            }))
+                        }
+                        
+                    }
+                    
+                    catch(err){
+                        console.log("error: ", err)
+                        new Promise(err)
+                        return err
+                    }
+                    // )
+                    
+                }
+                recommendations.push(Promise.all(retailer_recommendations))
+
+                
+                
+                console.log("got to promise all")
+                console.log("all promises: ", recommendations)
+                console.log("recommendations: ", JSON.stringify(recommendations))
+                console.log("res: ", recommendations)
+            }
+            Promise.all(recommendations).then((results)=>{
+                response.header({"Access-Control-Allow-Origin": "*"})
+                return response.send({
+                    "result": results
+                })
+            })
+        }
+        catch(err){
+            console.log("error: ", err)
+            return response.send({
+                "result": err
+            })
+        }
+
+    })
+
+});
+
+
+
+
+
+
+
 exports.getCategoryRecommendations = functions.runWith({ memory: "1GB" }).https.onRequest((request, response) => {
     // response.set('Access-Control-Allow-Origin', '*');
 
@@ -602,7 +706,7 @@ exports.getCategoryRecommendations = functions.runWith({ memory: "1GB" }).https.
                             )
                         })
                         
-                        const promise = {"category": category, "recommendations": query.data};
+                        const promise = {"category": category, "recommendations": filtered_query};
                         console.log("result data is: ", JSON.stringify(filtered_query));
                         // console.log("result is: ", res)
             

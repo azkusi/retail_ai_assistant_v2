@@ -433,7 +433,7 @@ async function getImageEmbedding(url){
                     'connectionTimeoutSeconds': 180
                   })
                   // client.collections('all_retailers').documents().delete({'filter_by': 'product_image_url:= ""'})
-                  client.collections('all_retailers').documents().search({"q": "*", "query_by": "product_image_url", "per_page": 250, "page": 11})
+                  client.collections('all_retailers').documents().search({"q": "*", "query_by": "retailer", "per_page": 250, "page": 11})
                   .then((result)=>{
                     console.log("result was: ", result)
                     let i = 0

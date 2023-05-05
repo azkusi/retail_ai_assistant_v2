@@ -10,7 +10,7 @@ import TextResults from './pages/TextResults';
 
 import Home from './pages/Home';
 import ClusterInserts from './components/ClusterInserts';
-import RecommendationResults from './components/RecommendationResults';
+import RetailerSeeMoreRecommendations from './pages/RetailerSeeMoreRecommendations';
 import ShoppingHome from './pages/ShoppingHome';
 import SearchResults from './components/SearchResults';
 import StyleInit from './pages/StyleInit';
@@ -122,7 +122,7 @@ function App() {
 
         <Route path="/image-search-results/:id" element={<TextResults/>}/>
         <Route path="/cluster-inserts" element={<ClusterInserts/>}/>
-        <Route path="/recommendation-results" element={<RecommendationResults/>} />
+        {/* <Route path="/recommendation-results" element={<RecommendationResults/>} /> */}
         {/* <Route path="/shopping-home" element={<ShoppingHome/>} /> */}
         <Route path="/home/:id" element={<TailorAI/>} />
 
@@ -132,6 +132,8 @@ function App() {
 
         <Route path="/header" element={<Header/>} />
         <Route path="/forgot-password" element={<ForgotPassword/>} />
+
+        <Route path="/recommendation-results/:id" element={<RetailerSeeMoreRecommendations/>} />
 
 
 
