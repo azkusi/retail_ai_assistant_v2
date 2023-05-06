@@ -42,20 +42,37 @@ function ClusterInserts(props) {
   // const retailers = ["arket", "bershka", "boohoo", "lululemon", "nastygal", "next", "pullandbear", "riverisland", "reiss", "selfridges", "uniqlo"]
 
   const retailers_object = {
-    // "arket": arket,
-    // "bershka": bershka,
-    // "boohoo": boohoo,
-    // "lululemon": lululemon,
-    // "missguided": missguided,
-    // "nastygal": nastygal,
-    // "next": next,
-    // "pullandbear": pullandbear,
-    // "riverisland": riverisland,
-    // "reiss": reiss,
-    // "selfridges": selfridges,
-    // "uniqlo": uniqlo,
+    "arket": arket,
+    "bershka": bershka,
+    "boohoo": boohoo,
+    "lululemon": lululemon,
+    "missguided": missguided,
+    "nastygal": nastygal,
+    "next": next,
+    "pullandbear": pullandbear,
+    "riverisland": riverisland,
+    "reiss": reiss,
+    "selfridges": selfridges,
+    "uniqlo": uniqlo,
     "cos": cos
 
+  }
+
+  const retailers_converter = {
+
+    "arket": "Arket",
+    "bershka": "Bershka",
+    "boohoo": "Boohoo",
+    "lululemon": "Lululemon",
+    "missguided": "Missguided",
+    "nastygal": "Nasty Gal",
+    "next": "Next",
+    "pullandbear": "Pull and Bear",
+    "riverisland": "River Island",
+    "reiss": "Reiss",
+    "selfridges": "Selfridges",
+    "uniqlo": "Uniqlo",
+    "cos": "COS",
   }
   
   const [mens_ts, set_mens_ts] = useState(mens_t_shirts)
@@ -433,23 +450,30 @@ async function getImageEmbedding(url){
                     'connectionTimeoutSeconds': 180
                   })
                   // client.collections('all_retailers').documents().delete({'filter_by': 'product_image_url:= ""'})
-                  client.collections('all_retailers').documents().search({"q": "*", "query_by": "retailer", "per_page": 250, "page": 11})
-                  .then((result)=>{
-                    console.log("result was: ", result)
-                    let i = 0
-                    for(i; i < result.hits.length; i++){
-                      console.log("i is: ", i, "and product_image_url is: ", result.hits[i].document["product_image_url"])
-                      if(result.hits[i].document["product_image_url"] === "" || result.hits[i].document["product_image_url"] === undefined || result.hits[i].document["product_image_url"] === null){
-                        console.log("found empty image url")
-                        client.collections('all_retailers').documents(result.hits[i].document["id"]).delete()
-                        .then((result)=>{
-                          console.log("DELETED EMPTY IMAGE URL")
-                          console.log("result was: ", result)
-                        })
-                      }
-                    }
+                  let j = 0;
+                  const retailers = Object.keys(retailers_converter)
+                  for(j; j < retailers.length; j++){
+                      client.collections(retailers[j]).documents().search({"q": "*", "query_by": "retailer", "per_page": 250, "page": 4})
+                      .then((result)=>{
+                        console.log("result was: ", result)
+                        let i = 0
+                        for(i; i < result.hits.length; i++){
+                          console.log("i is: ", i, "collection is: ", j.toString(), "and retailer is: ", result.hits[i].document["retailer"])
+                          //if(result.hits[i].document["retailer"] !== retailers[j] || result.hits[i].document["product_image_url"] === undefined || result.hits[i].document["product_image_url"] === null){
+
+                          if(result.hits[i].document["retailer"] !== retailers_converter[retailers[j]]){
+                            console.log("found differing retailers")
+                            client.collections(retailers[j]).documents(result.hits[i].document["id"]).delete()
+                            .then((result)=>{
+                              console.log("DELETED EMPTY IMAGE URL")
+                              console.log("result was: ", result)
+                            })
+                          }
+                        }
+                      })
+                  
                   }
-                  )
+                  
 
                   
                 }}

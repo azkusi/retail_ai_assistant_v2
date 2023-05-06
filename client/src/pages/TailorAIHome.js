@@ -8,7 +8,7 @@ import useWindowSize from '../hooks/useWindow';
 import { number_six_style } from "../data/number_six";
 
 import { auth } from '../config';
-import TextSearch from '../components/TextSearch';
+import SearchBar from '../components/SearchBar';
 import Header from '../components/Header';
 
 
@@ -21,7 +21,6 @@ function TailorAI(props){
     const [selected_categories, set_selected_categories] = useState(null)
     const [selected_retailers, set_selected_retailers] = useState(null)
     const [already_seen, set_already_seen] = useState(null)
-    const [last_seen_index, set_last_seen_index] = useState(15)
 
     const navigate = useNavigate()
     const { id } = useParams()
@@ -60,12 +59,6 @@ function TailorAI(props){
 
     const images = womens_style_categories
 
-    function updateAlreadySeen(){
-        db.collection("new_users").doc(user).get().then((doc)=>{
-            const already_seen = doc.data().already_seen
-            set_already_seen(already_seen)
-        })
-    }
 
     function retrieveRetailerRecommendations(selected_categories, selected_retailers, already_seen){
         //send to python server where will loop through
@@ -476,7 +469,7 @@ function TailorAI(props){
                     </div>
                     
                     <div>
-                        <TextSearch/>
+                        <SearchBar/>
                     </div>
                     <br/>
                     <br/>
