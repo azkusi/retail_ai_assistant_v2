@@ -2,21 +2,12 @@
 import { React, useEffect, useState } from 'react';
 import {useNavigate} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import useWindowSize from "../hooks/useWindow";
-import Dropdown from 'react-bootstrap/Dropdown';
 import {Button} from 'react-bootstrap'
 import '../App.css';
-import {mens_trousers} from '../data/mens_trousers'
-import {mens_t_shirts} from '../data/mens_t_shirts'
-import { db } from '../config';
 import axios from 'axios';
-import { firebaseApp } from '../config';
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
-import "firebase/compat/storage"
 
-import {cos} from '../data/cos'
-import {missguided} from '../data/missguided'
+import {cos} from '../data/retailer_products_jsons/cos'
+import {missguided} from '../OldComponents/missguided'
 import {arket} from '../data/retailer_products_jsons/arket';
 import {bershka} from '../data/retailer_products_jsons/bershka';
 import {boohoo} from '../data/retailer_products_jsons/boohoo';
@@ -39,7 +30,6 @@ const Typesense = require('typesense')
 
 function ClusterInserts(props) {  
 
-  // const retailers = ["arket", "bershka", "boohoo", "lululemon", "nastygal", "next", "pullandbear", "riverisland", "reiss", "selfridges", "uniqlo"]
 
   const retailers_object = {
     "arket": arket,
@@ -75,14 +65,11 @@ function ClusterInserts(props) {
     "cos": "COS",
   }
   
-  const [mens_ts, set_mens_ts] = useState(mens_t_shirts)
-  const [mens_trous, set_mens_trous] = useState(mens_trousers) 
-  const API_KEY_DEEP_AI = process.env.DEEP_AI
-  const API_KEY_OPEN_AI = process.env.OPEN_AI
-  const PINECONE_API_KEY = process.env.PINECONE
-  const TYPESENSE_API_KEY = "0ay9AbptlTqyP2egi7V6tXYSm0fRSolX"
-  const [embedding, set_embedding] = useState(null)
-  // const [trousers_insert, set_trousers_insert] = useState([])
+  
+  // const API_KEY_DEEP_AI = process.env.DEEP_AI
+  // const API_KEY_OPEN_AI = process.env.OPEN_AI
+  // const PINECONE_API_KEY = process.env.PINECONE
+  // const TYPESENSE_API_KEY = "0ay9AbptlTqyP2egi7V6tXYSm0fRSolX"
   const navigate = useNavigate()
 
 
@@ -94,17 +81,7 @@ function ClusterInserts(props) {
 
   // let trousers_insert = []
 
-  if (!firebase.apps.length) {
-    firebaseApp()
-    db = firebase.firestore()
-    projectStorage = firebase.storage();
-    projectFirestore = firebase.firestore();
-  }else {
-  let db = firebase.app().firestore() // if already initialized, use this one
-    projectStorage = firebase.app().storage();
-    projectFirestore = firebase.app().firestore();
 
-  }
 
   let client = new Typesense.Client({
                 'nodes': [{
@@ -152,18 +129,13 @@ function ClusterInserts(props) {
 
 async function getImageEmbedding(url){
   return new Promise(async (resolve, reject)=>{
-    const CORS_ANYWHERE_URL = 'https://cors-anywhere.herokuapp.com/';
 
-    // url = url + "?not-from-cache-please";
     try{
       const response = await axios.post(`https://europe-west2-clip-embeddings.cloudfunctions.net/getImageEmbedding-on-server`,
         {
             "url": url
         }
       
-    //     {
-    //     responseType: 'blob'
-    //   }
       )
       if(response.status === 200){
         console.log("image response: ", response)
@@ -171,32 +143,11 @@ async function getImageEmbedding(url){
         const embedding = response.data
 
         resolve(embedding)
-        // const blob_data = response.data
-        // const file = new File([response.data], "test.jpg")
-        // console.log("blob is", response.data)
-        // console.log("file is ", file)
-
-        // var formData = new FormData()
-        // formData.append("image", file)
-
-        //   axios.post('https://europe-west2-clip-embeddings.cloudfunctions.net/getImageEmbedding', formData, {
-        //     headers: {
-        //       'Content-Type': 'multipart/form-data'
-        //     }
-        //   }).then((result)=>{
-        //     const embedding = (result.data)
-        //     console.log("type of embedding ", typeof(embedding))
-        //     console.log("embedding is: ", JSON.stringify(embedding))
-        //     resolve(embedding)
-        //   })
       }else{
         console.log(`error retrieving image encoding:, ${response.status}, ${response.statusText}`)
         resolve(0)
       }
-    //   if(response.status === 404){
-    //     console.log("error image does not exist:")
-    //     resolve(0)
-    //   }
+
     }
     catch(error){
       console.log("Retrieval error occured:", error)
@@ -452,8 +403,8 @@ async function getImageEmbedding(url){
                   // client.collections('all_retailers').documents().delete({'filter_by': 'product_image_url:= ""'})
                   let j = 0;
                   const retailers = Object.keys(retailers_converter)
-                  for(j; j < retailers.length; j++){
-                      client.collections(retailers[j]).documents().search({"q": "*", "query_by": "retailer", "per_page": 250, "page": 4})
+                  // for(j; j < retailers.length; j++){
+                      client.collections("missguided").documents().search({"q": "*", "query_by": "product_image_url", "per_page": 250, "page": 3})
                       .then((result)=>{
                         console.log("result was: ", result)
                         let i = 0
@@ -461,9 +412,9 @@ async function getImageEmbedding(url){
                           console.log("i is: ", i, "collection is: ", j.toString(), "and retailer is: ", result.hits[i].document["retailer"])
                           //if(result.hits[i].document["retailer"] !== retailers[j] || result.hits[i].document["product_image_url"] === undefined || result.hits[i].document["product_image_url"] === null){
 
-                          if(result.hits[i].document["retailer"] !== retailers_converter[retailers[j]]){
-                            console.log("found differing retailers")
-                            client.collections(retailers[j]).documents(result.hits[i].document["id"]).delete()
+                          if(result.hits[i].document["product_image_url"] === undefined || result.hits[i].document["product_image_url"] === null || result.hits[i].document["product_image_url"] === ""){
+                            console.log("found empty product image url")
+                            client.collections('missguided').documents(result.hits[i].document["id"]).delete()
                             .then((result)=>{
                               console.log("DELETED EMPTY IMAGE URL")
                               console.log("result was: ", result)
@@ -472,7 +423,7 @@ async function getImageEmbedding(url){
                         }
                       })
                   
-                  }
+                  // }
                   
 
                   

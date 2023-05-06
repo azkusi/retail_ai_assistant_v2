@@ -10,9 +10,6 @@ import { firebaseApp } from '../config';
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage"
-import { mixed_clothing } from '../data/mixed_clothing';
-import { mens_t_shirts } from '../data/mens_t_shirts';
-import { mens_clothing } from '../data/mens_clothing';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Typography } from '@mui/material';
 
@@ -27,10 +24,7 @@ const Typesense = require('typesense')
 
 function TextResults() {
 
-  const [product_results, set_product_results] = useState(null)
-  const [refresh_status, set_refresh_status] = useState("NO_CHANGE")
   const [search_results, set_search_results] = useState(null)
-  const [loading_new_choices, set_loading_new_choices] = useState(true)
   const [user_request, set_user_request] = useState(null)
   const { id } = useParams()
   const width = useWindowSize().width
