@@ -4,9 +4,6 @@ const admin = require('firebase-admin')
 const axios  = require('axios')
 const cors = require('cors')({origin: "*"});
 const similarity = require( 'compute-cosine-similarity' );
-const deepai = require('deepai'); // 
-const API_KEY_OPEN_AI = process.env.OPEN_AI
-const API_KEY_DEEP_AI = process.env.DEEP_AI
 
 
 const formal_embeddings = require('./formal_embeddings.json') ;
