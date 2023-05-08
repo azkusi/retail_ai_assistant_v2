@@ -3,13 +3,13 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
 export const firebaseApp = firebase.initializeApp({
-  apiKey: "AIzaSyDXjBvg6CNef3U-HxRvMNx-KAcSoFvTqO0",
-  authDomain: "retail-assistant-demo.firebaseapp.com",
-  projectId: "retail-assistant-demo",
-  storageBucket: "retail-assistant-demo.appspot.com",
-  messagingSenderId: "313091990397",
-  appId: "1:313091990397:web:c15f21d94c815dbb9b2214"
-  // measurementId: "G-6XKQKQRG0L"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBSE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 });
 
   

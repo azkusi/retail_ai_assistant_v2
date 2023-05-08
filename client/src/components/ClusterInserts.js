@@ -24,6 +24,7 @@ const Typesense = require('typesense')
 
 
 
+
  
 
 
@@ -66,10 +67,8 @@ function ClusterInserts(props) {
   }
   
   
-  // const API_KEY_DEEP_AI = process.env.DEEP_AI
-  // const API_KEY_OPEN_AI = process.env.OPEN_AI
-  // const PINECONE_API_KEY = process.env.PINECONE
-  // const TYPESENSE_API_KEY = "0ay9AbptlTqyP2egi7V6tXYSm0fRSolX"
+  const TYPESENSE_API_KEY = process.env.REACT_APP_TYPESENSE_API_KEY
+  const TYPESENSE_HOST = process.env.REACT_APP_TYPESENSE_HOST
   const navigate = useNavigate()
 
 
@@ -83,15 +82,6 @@ function ClusterInserts(props) {
 
 
 
-  let client = new Typesense.Client({
-                'nodes': [{
-                  'host': 'j1e5iohdgu2ya7nqp-1.a1.typesense.net', // For Typesense Cloud use xxx.a1.typesense.net
-                  'port': '443',      // For Typesense Cloud use 443
-                  'protocol': 'https'   // For Typesense Cloud use https
-                }],
-                'apiKey': 'qVEACzIepH6miYVADVgngiTOZOjxjKiR',
-                'connectionTimeoutSeconds': 180
-              })
 
   useEffect(()=>{
     
@@ -237,11 +227,11 @@ async function getImageEmbedding(url){
                                     console.log("i is ", i)
                                     let client = new Typesense.Client({
                                       'nodes': [{
-                                        'host': 'j1e5iohdgu2ya7nqp-1.a1.typesense.net', // For Typesense Cloud use xxx.a1.typesense.net
+                                        'host': TYPESENSE_HOST, // For Typesense Cloud use xxx.a1.typesense.net
                                         'port': '443',      // For Typesense Cloud use 443
                                         'protocol': 'https'   // For Typesense Cloud use https
                                       }],
-                                      'apiKey': 'qVEACzIepH6miYVADVgngiTOZOjxjKiR',
+                                      'apiKey': TYPESENSE_API_KEY,
                                       'connectionTimeoutSeconds': 180
                                     })
                                     await client.collections(Object.keys(retailers_object)[i]).documents().import(products_insert, {action: 'create'})
@@ -315,11 +305,11 @@ async function getImageEmbedding(url){
                                         console.log("i is ", i)
                                         let client = new Typesense.Client({
                                           'nodes': [{
-                                            'host': 'j1e5iohdgu2ya7nqp-1.a1.typesense.net', // For Typesense Cloud use xxx.a1.typesense.net
+                                            'host': TYPESENSE_HOST, // For Typesense Cloud use xxx.a1.typesense.net
                                             'port': '443',      // For Typesense Cloud use 443
                                             'protocol': 'https'   // For Typesense Cloud use https
                                           }],
-                                          'apiKey': 'qVEACzIepH6miYVADVgngiTOZOjxjKiR',
+                                          'apiKey': TYPESENSE_API_KEY,
                                           'connectionTimeoutSeconds': 180
                                         })
                                         await client.collections(Object.keys(retailers_object)[i]).documents().import(products_insert, {action: 'create'})
@@ -358,11 +348,11 @@ async function getImageEmbedding(url){
                           if(products_insert.length > 0){
                             let client = new Typesense.Client({
                               'nodes': [{
-                                'host': 'j1e5iohdgu2ya7nqp-1.a1.typesense.net', // For Typesense Cloud use xxx.a1.typesense.net
+                                'host': TYPESENSE_HOST, // For Typesense Cloud use xxx.a1.typesense.net
                                 'port': '443',      // For Typesense Cloud use 443
                                 'protocol': 'https'   // For Typesense Cloud use https
                               }],
-                              'apiKey': 'qVEACzIepH6miYVADVgngiTOZOjxjKiR',
+                              'apiKey': TYPESENSE_API_KEY,
                               'connectionTimeoutSeconds': 180
                             })
                             client.collections(Object.keys(retailers_object)[i]).documents().import(products_insert, {action: 'create'})
@@ -391,13 +381,14 @@ async function getImageEmbedding(url){
 
               <Button
                 onClick={()=>{
+                  console.log("apikey is: ", TYPESENSE_API_KEY, "host is: ", TYPESENSE_HOST)
                   let client = new Typesense.Client({
                     'nodes': [{
-                      'host': 'j1e5iohdgu2ya7nqp-1.a1.typesense.net', // For Typesense Cloud use xxx.a1.typesense.net
+                      'host': TYPESENSE_HOST, // For Typesense Cloud use xxx.a1.typesense.net
                       'port': '443',      // For Typesense Cloud use 443
                       'protocol': 'https'   // For Typesense Cloud use https
                     }],
-                    'apiKey': 'qVEACzIepH6miYVADVgngiTOZOjxjKiR',
+                    'apiKey': TYPESENSE_API_KEY,
                     'connectionTimeoutSeconds': 180
                   })
                   // client.collections('all_retailers').documents().delete({'filter_by': 'product_image_url:= ""'})

@@ -23,15 +23,6 @@ function App() {
   const height = useWindowSize().height
   const [model_initialiser, set_model_initialiser] = useState(0)
 
-  let client = new TypesenseSearchClient({
-    'nodes': [{
-      'host': 'j1e5iohdgu2ya7nqp-1.a1.typesense.net', // For Typesense Cloud use xxx.a1.typesense.net
-      'port': '443',      // For Typesense Cloud use 443
-      'protocol': 'https'   // For Typesense Cloud use https
-    }],
-    'apiKey': 'qVEACzIepH6miYVADVgngiTOZOjxjKiR',
-    'connectionTimeoutSeconds': 2
-  })
 
   
   return (
