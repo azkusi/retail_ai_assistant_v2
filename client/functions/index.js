@@ -3,6 +3,7 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin')
 const axios  = require('axios')
 const cors = require('cors')({origin: "*"});
+require('dotenv').config();
 const similarity = require( 'compute-cosine-similarity' );
 
 
@@ -16,7 +17,17 @@ const lounge_wear_embeddings = require('./lounge_wear_embeddings.json') ;
 const party_wear_embeddings = require('./party_wear_embeddings.json') ;
 const retailers_converter = require('./retailers_converter.json') ;
 
+const Typesense = require('typesense')
+
 admin.initializeApp();
+
+//firebase config variables, set using cli
+// const TYPESENSE_API_KEY = functions.config().typesense.apikey
+// const TYPESENSE_HOST = functions.config().typesense.host
+
+// env variables below work but using ones set in firebase config instead
+const typesense_env_host = process.env.TYPESENSE_HOST
+const typesense_env_apikey = process.env.TYPESENSE_API_KEY
 
 
 const category_embeddings = {
@@ -112,6 +123,8 @@ exports.getRetailerRecommendations = functions.runWith({ memory: "1GB" }).https.
         functions.logger.info("Hello logs!", {structuredData: true});
         //receive user request and generate embeddings for the request
         // {"casual": https://casual.png}
+        console.log("env apikey : ", typesense_env_apikey, "env host: ", typesense_env_host)
+        // console.log("typesense apikey: ", TYPESENSE_API_KEY, "typesense host: ", TYPESENSE_HOST)
         console.log("data sent: ", request.body)
         
         const categories = request.body["categories"]
@@ -124,6 +137,7 @@ exports.getRetailerRecommendations = functions.runWith({ memory: "1GB" }).https.
         console.log("category_embeddings: ", category_embeddings)
         console.log("already_seen: ", already_seen)
         try{
+            
             for (const retailer of retailers) {
                 console.log("retailer: ", retailer)
                 const retailer_recommendations = []
@@ -141,10 +155,35 @@ exports.getRetailerRecommendations = functions.runWith({ memory: "1GB" }).https.
                     console.log("collection is: ", retailers_converter[retailer]);
                     // const promise = (
                     try{
-                        const query = await axios.post(url, postData)
-                        if(query.data === "Cloud Functions Error"){
-                            console.log("error: ", query.data)
-                            const promise = {"retailer": retailer, "category": category, "recommendations": []};
+                        
+                        let client = new Typesense.Client({
+                            'nodes': [{
+                              'host': typesense_env_host, // For Typesense Cloud use xxx.a1.typesense.net
+                              'port': '443',      // For Typesense Cloud use 443
+                              'protocol': 'https'   // For Typesense Cloud use https
+                            }],
+                            'apiKey': typesense_env_apikey,
+                            'connectionTimeoutSeconds': 180
+                          })
+                          
+                        let searchRequests = {
+                        'searches': [
+                            {
+                            'collection': retailers_converter[retailer],
+                            'q': '*',
+                            'vector_query' : `vec:(${JSON.stringify(category_embeddings[category])}, k:30)`,
+                            'filter_by' : `description:!=${already_seen}`
+                            }
+                        ]
+                        }
+                        let commonSearchParams = {}
+                        const query = client.multiSearch.perform(searchRequests, commonSearchParams)
+                        console.log("query data is: ", JSON.stringify(query.data));
+                        // const query = await axios.post(url, postData)
+                        if(query.data === "" || query.data === undefined || query.data === null || query.data === {} || query.data === []){
+                            console.log("error in search request was: ", query.data)
+                            // const promise = {"retailer": retailer, "category": category, "recommendations": []};
+                            const promise = {"retailer": retailer, "category": category, "recommendations": query.data};
                             retailer_recommendations.push(promise);
                         }
                         else{
@@ -241,8 +280,30 @@ exports.getMoreRetailerRecommendations = functions.runWith({ memory: "1GB" }).ht
                     console.log("collection is: ", retailers_converter[retailer]);
                     // const promise = (
                     try{
-                        const query = await axios.post(url, postData)
-                        if(query.data === "Cloud Functions Error"){
+                        let client = new Typesense.Client({
+                            'nodes': [{
+                              'host': typesense_env_host, // For Typesense Cloud use xxx.a1.typesense.net
+                              'port': '443',      // For Typesense Cloud use 443
+                              'protocol': 'https'   // For Typesense Cloud use https
+                            }],
+                            'apiKey': typesense_env_apikey,
+                            'connectionTimeoutSeconds': 180
+                          })
+
+                        let searchRequests = {
+                        'searches': [
+                            {
+                            'collection': retailers_converter[retailer],
+                            'q': '*',
+                            'vector_query' : `vec:(${JSON.stringify(category_embeddings[category])}, k:30)`,
+                            'filter_by=description' : `!=${already_seen}`
+                            }
+                        ]
+                        }
+                        let commonSearchParams = {}
+                        const query = client.multiSearch.perform(searchRequests, commonSearchParams)
+                        // const query = await axios.post(url, postData)
+                        if(query.data === "" || query.data === undefined || query.data === null || query.data === {} || query.data === []){
                             console.log("error: ", query.data)
                             const promise = {"retailer": retailer, "category": category, "recommendations": []};
                             retailer_recommendations.push(promise);
@@ -334,9 +395,31 @@ exports.getCategoryRecommendations = functions.runWith({ memory: "1GB" }).https.
                 };
                 
                 try{
+                    let client = new Typesense.Client({
+                        'nodes': [{
+                          'host': typesense_env_host, // For Typesense Cloud use xxx.a1.typesense.net
+                          'port': '443',      // For Typesense Cloud use 443
+                          'protocol': 'https'   // For Typesense Cloud use https
+                        }],
+                        'apiKey': typesense_env_apikey,
+                        'connectionTimeoutSeconds': 180
+                      })
+
+                    let searchRequests = {
+                    'searches': [
+                        {
+                        'collection': "all_retailers",
+                        'q': '*',
+                        'vector_query' : category_embeddings[category],
+                        'filter_by=description' : `!=${already_seen}`
+                        }
+                    ]
+                    }
+                    let commonSearchParams = {}
+                    // const query = client.multiSearch.perform(searchRequests, commonSearchParams)
                     const query = await axios.post(url, postData)
 
-                    if(query.data === "Cloud Functions Error"){
+                    if(query.data === "" || query.data === undefined || query.data === null || query.data === {} || query.data === []){
                         console.log("error: ", query.data)
                         const promise = {"category": category, "recommendations": []};
                         recommendations.push(Promise.resolve(promise));
